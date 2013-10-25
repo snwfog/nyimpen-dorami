@@ -13,7 +13,9 @@ namespace FoodFight
   class AirGun : AnimatedSprite
   {
     private bool IsConsumed { get; set; }
-    private int timeToLive = 1000 * 30; // 10 seconds
+    private const int MIN_TTL = 20 * 1000;
+    private const int MAX_TTL = 40 * 1000;
+    private int timeToLive = rand.Next(MIN_TTL, MAX_TTL);
 
     public AirGun(Texture2D texture, Vector2 position, ref int[] lineSpriteAccToStatus)
       : base(texture, position, 1, 1, ref lineSpriteAccToStatus)
@@ -26,7 +28,7 @@ namespace FoodFight
     public void ReRack(Rectangle bound)
     {
       this.IsConsumed = false;
-      this.timeToLive = rand.Next(10 * 1000, 30 * 1000);
+      this.timeToLive = rand.Next(MIN_TTL, MAX_TTL);
       this.timer = 0; // Essentially reset the timer
       // Respawn a new location
       int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
