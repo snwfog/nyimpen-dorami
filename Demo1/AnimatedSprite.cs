@@ -96,7 +96,14 @@ namespace Demo1
         sourceRect = new Rectangle(currentFrame * (int)sizeSprite.X,  line * (int)sizeSprite.Y, (int)sizeSprite.X, (int)sizeSprite.Y);
       }
 
-      spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
+      // We going to draw the z-index of this character based on his height
+      // So the higher y-axis, the higher the index
+      // Adds a sprite to a batch of sprites for rendering using the specified texture, destination rectangle, source rectangle, color, rotation, origin, effects and layer
+      // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
+      // Get the z-index from height
+      int zIndex = this.position.Y + this.sizeSprite.Y;
+      spriteBatch.Draw(texture, sourceRect, null, Color.White, 0, finalPosition, SpriteEffects.None, zIndex);
+
     }
   }
 }

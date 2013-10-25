@@ -39,7 +39,14 @@ namespace FoodFight
       }
 
       finalPosition = this.position;
-      spriteBatch.Draw(texture, finalPosition, sourceRect, this.tint);
+      // spriteBatch.Draw(texture, finalPosition, sourceRect, this.tint);
+      // We going to draw the z-index of this character based on his height
+      // So the higher y-axis, the higher the index
+      // Adds a sprite to a batch of sprites for rendering using the specified texture, destination rectangle, source rectangle, color, rotation, origin, effects and layer
+      // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
+      // Get the z-index from height
+      int zIndex = this.position.Y + this.sizeSprite.Y;
+      spriteBatch.Draw(texture, sourceRect, null, this.tint, 0, finalPosition, SpriteEffects.None, zIndex);
     }
   }
 }
