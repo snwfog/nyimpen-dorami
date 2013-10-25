@@ -13,7 +13,7 @@ namespace FoodFight
   class AirGun : AnimatedSprite
   {
     private bool IsConsumed { get; set; }
-    private int timeToLive = 6000; // 6 seconds
+    private int timeToLive = 1000 * 30; // 10 seconds
 
     public AirGun(Texture2D texture, Vector2 position, ref int[] lineSpriteAccToStatus)
       : base(texture, position, 1, 1, ref lineSpriteAccToStatus)
@@ -26,6 +26,7 @@ namespace FoodFight
     public void ReRack(Rectangle bound)
     {
       this.IsConsumed = false;
+      this.timeToLive = rand.Next(10 * 1000, 30 * 1000);
       this.timer = 0; // Essentially reset the timer
       // Respawn a new location
       int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
