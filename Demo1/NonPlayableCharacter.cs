@@ -179,7 +179,7 @@ namespace FoodFight
     public void DeflectDirection()
     {
       // Compute the deflection wheel, where 0 = North, going clockwise, NW = 7
-      int currentDirectionAsInt = (int) currentDirection;
+      int currentDirectionAsInt = (int) this.status;
       // Proper deflection array because I am too lazy to do it object oritented
       int[,] deflectionTable = new int[,]
       {
@@ -194,7 +194,7 @@ namespace FoodFight
       };
 
       int nextDirectionAsInt = deflectionTable[currentDirectionAsInt, rand.Next(0, 5)];
-      this.position = (Status) nextDirectionAsInt;
+      this.status = (Status) nextDirectionAsInt;
     }
 
 
