@@ -12,6 +12,7 @@ namespace FoodFight
 {
   class AirGun : AnimatedSprite
   {
+    private int Ammo { get; set }
     private bool IsConsumed { get; set; }
     private const int MIN_TTL = 20 * 1000;
     private const int MAX_TTL = 40 * 1000;
@@ -20,6 +21,7 @@ namespace FoodFight
     public AirGun(Texture2D texture, Vector2 position, ref int[] lineSpriteAccToStatus)
       : base(texture, position, 1, 1, ref lineSpriteAccToStatus)
     {
+      this.ammo = 3;
       this.status = Status.IDLE;
       this.idleStatus = Status.N;
       this.finalPosition = this.position;

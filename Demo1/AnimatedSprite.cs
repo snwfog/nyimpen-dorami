@@ -102,7 +102,7 @@ namespace Demo1
       // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
       // Get the z-index from height
       float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
-      spriteBatch.Draw(texture, finalPosition, Color.White, 0, Vector2.Zero, SpriteEffects.None, zIndex);
+      spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None,  zIndex);
 
     }
   }

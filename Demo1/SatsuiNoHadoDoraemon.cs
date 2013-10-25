@@ -8,8 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  class SatsuiNoHadoDoraemon : NonPlayableCharacter
+  class SatsuiNoHadoDoraemon : NonPlayableCharacter, Shootable
   {
+    private int AmmoCount { get; set; }
+    private int List<Projectile> ammoRack;
     private Color tint { get; set; }
     public SatsuiNoHadoDoraemon(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY,
       ref int[] lineSpriteAccToStatus, bool isMovable)
@@ -21,6 +23,19 @@ namespace FoodFight
       tint = new Color(r, g, b);
       status = Status.IDLE;
       idleStatus = Status.S;
+      ammoCount = 10000; // Essentially unlimited ammo
+      ammoRack = new List<Projectile>();
+    }
+
+    public void ChargeAmmo(Projectile ammo)
+    {
+      if (this.ammoRack.Count < AmmoCount)
+        this.ammoRack.Add(ammo);
+    }
+
+    public void Shoot()
+    {
+
     }
 
     public new void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
@@ -46,7 +61,7 @@ namespace FoodFight
       // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
       // Get the z-index from height
       float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
-      spriteBatch.Draw(texture, finalPosition, this.tint, 0, Vector2.Zero, SpriteEffects.None, zIndex);
+      spriteBatch.Draw(texture, finalPosition, sourceRect, this.tint, 0, Vector2.Zero, 1, SpriteEffects.None, zIndex);
     }
   }
 }

@@ -84,6 +84,8 @@ namespace Demo1
       // Create SatsuiNoHadoDoraemon
       Texture2D hadoDoraemonTexture = Content.Load<Texture2D>("hado-doraemon-walk");
       Rectangle mobSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
+      // Load texture for the projectile sprite
+      Texture2D projectileTexture2D = Content.Load<Texture2D>("projectile");
       // Create Satsui No Hado Doraemon
       for (int i = 1; i <= maxNumberOfBadGuysTM; i++)
       {
@@ -102,15 +104,20 @@ namespace Demo1
 
         SatsuiNoHadoDoraemon hadoDoraemon = new SatsuiNoHadoDoraemon(hadoDoraemonTexture, hadoDoraemonInitialPosition, 6, 8, ref hadoDoraemonLineSprite, true);
         badGuysTM.Add(hadoDoraemon);
+
+        for (int i = 0; i < hadoDoraemon.AmmoCount; i++)
+          hadoDoraemon.ChargeAmmo(new Projectile(project
+            , hadoDoraemon.position, 6, 8, hadoDoraemonLineSprite, hadoDoraemon));
       }
 
 
-      // Create Air gun
+      // Create Air gun for pickup on the floor
       Texture2D airGunTexture2D = Content.Load<Texture2D>("canon-on-the-ground");
       Rectangle airGunSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
       // Give 2 chance of creating airgun, after this, it will be determined by the Update method
       for (int i = 1; i <= maxNumberOfAirGuns; i++)
         this.SpawnAirGun(airGunSpawnBound, airGunTexture2D);
+
     }
 
     private void SpawnAirGun(Rectangle bound, Texture2D airGunTexture)
