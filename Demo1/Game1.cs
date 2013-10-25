@@ -155,6 +155,26 @@ namespace Demo1
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
         this.Exit();
 
+      // Check collision with other NPCs
+      foreach (SatsuiNoHadoDoraemon badDora in badGuysTM)
+      {
+        foreach (SatsuiNoHadoDoraemon otherBadDora in badGuysTM)
+        {
+          if (badDora != otherBadDora && badDora.CheckCollision(otherBadDora))
+          {
+            // Randomly deflect one of the bad dora
+            if (badDora.rand.Next(0, 1) == 0)
+            {
+              badDora.position = badDora.DeflectDirection();
+            }
+            else
+            {
+              otherBadDora.position = otherBadDora.DeflectDirection();
+            }
+          }
+        }
+      }
+
       // Respawns the airgun if necessary
       foreach (AirGun gun in ammoRack)
       {
