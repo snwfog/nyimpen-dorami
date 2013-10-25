@@ -13,6 +13,7 @@ namespace FoodFight
   {
     protected AnimatedSprite owner;
     protected Rectangle hitBox;
+    protected float velocity;
 
     public Projectile(Texture2D texture, Vector2 position, int nbMaxFrameX, int nbMaxFramesY,
       ref int[] lineSpriteAccToStatus, AnimatedSprite owner) : base(texture, position, nbMaxFrameX, nbMaxFramesY, ref lineSpriteAccToStatus)
