@@ -170,11 +170,6 @@ namespace Demo1
         }
       }
 
-      if (ammoRack.Count < maxNumberOfAirGuns)
-      {
-        this.SpawnAirGun();
-      }
-
       doraemon.Update(gameTime, yardBound);
       dorami.Update(gameTime, yardBound);
 

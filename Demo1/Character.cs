@@ -15,9 +15,8 @@ namespace FoodFight
   {
     private Vector2 direction { get; set; }
     private float velocity { get; set; }
-    private Vector2 hitBoxSize;
 
-    public Character(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus) 
+    public Character(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
       : base(texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.status = Status.W;

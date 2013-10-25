@@ -25,7 +25,7 @@ namespace FoodFight
 
     public void ReRack(Rectangle bound)
     {
-      this.isConsumed = false;
+      this.IsConsumed = false;
       this.timer = 0; // Essentially reset the timer
       // Respawn a new location
       int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
@@ -37,7 +37,7 @@ namespace FoodFight
     {
       if (!this.IsConsumed && !this.IsExpired())
       {
-        Rectangle sourceRect = new Rectangle(0, 0, sizeSprite.X, sizeSprite.Y);
+        Rectangle sourceRect = new Rectangle(0, 0, (int)sizeSprite.X, (int)sizeSprite.Y);
         spriteBatch.Draw(texture, this.position, sourceRect, Color.White);
       }
     }
