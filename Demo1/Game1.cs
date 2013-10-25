@@ -163,14 +163,10 @@ namespace Demo1
           if (badDora != otherBadDora && badDora.CheckCollision(otherBadDora))
           {
             // Randomly deflect one of the bad dora
-            if (badDora.rand.Next(0, 1) == 0)
-            {
-              badDora.position = badDora.DeflectDirection();
-            }
+            if (AnimatedSprite.rand.Next(0, 1) == 0)
+              badDora.DeflectDirection();
             else
-            {
-              otherBadDora.position = otherBadDora.DeflectDirection();
-            }
+              otherBadDora.DeflectDirection();
           }
         }
       }

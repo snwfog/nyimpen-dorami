@@ -168,7 +168,7 @@ namespace FoodFight
       else
       {
         // Change the status of the character
-        this.status = this.DeflectDirection();
+        this.DeflectDirection();
       }
     }
 
@@ -176,7 +176,7 @@ namespace FoodFight
      * This method will deflect the character randomly based on the current
      * facing direction.
      */
-    public Status DeflectDirection()
+    public void DeflectDirection()
     {
       // Compute the deflection wheel, where 0 = North, going clockwise, NW = 7
       int currentDirectionAsInt = (int) currentDirection;
@@ -194,7 +194,7 @@ namespace FoodFight
       };
 
       int nextDirectionAsInt = deflectionTable[currentDirectionAsInt, rand.Next(0, 5)];
-      return (Status) nextDirectionAsInt;
+      this.position = (Status) nextDirectionAsInt;
     }
 
 
