@@ -117,7 +117,7 @@ namespace Demo1
     {
       // 50% of spawning a gun, while the rack is not yet full
 
-      if (AnimatedSprite.rand.Next(0, 60) >= 50 && ammoRack.Count < maxNumberOfAirGuns)
+      if (AnimatedSprite.rand.Next(0, 100) == 99 && ammoRack.Count < maxNumberOfAirGuns)
       {
         int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
         int y = AnimatedSprite.rand.Next(bound.Top, bound.Bottom);
@@ -163,7 +163,7 @@ namespace Demo1
         gun.Update(gameTime, yardBound);
         if (gun.IsExpired())
         {
-          if (AnimatedSprite.rand.Next(0, 60) >= 50)
+          if (AnimatedSprite.rand.Next(0, 100) == 99)
           {
             Rectangle airGunSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
             gun.ReRack(airGunSpawnBound);
