@@ -157,15 +157,16 @@ namespace Demo1
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
         this.Exit();
 
-      // Update the air guns
-      // Check if the existing air guns are expired
-      // If yes, then remove them from the ammo rack
+      // Respawns the airgun if necessary
       foreach (AirGun gun in ammoRack)
       {
         if (gun.IsExpired())
         {
-          // Null the airgun for garbage collection
-          gun = null;
+          if (AnimatedSprite.rand.Next(0, 100) >= 50)
+          {
+            Rectangle airGunSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
+            gun.ReRack(airGunSpawnBound);
+          }
         }
       }
 
