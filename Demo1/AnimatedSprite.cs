@@ -101,7 +101,7 @@ namespace Demo1
       // Adds a sprite to a batch of sprites for rendering using the specified texture, destination rectangle, source rectangle, color, rotation, origin, effects and layer
       // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
       // Get the z-index from height
-      int zIndex = this.position.Y + this.sizeSprite.Y;
+      float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
       spriteBatch.Draw(texture, sourceRect, null, Color.White, 0, finalPosition, SpriteEffects.None, zIndex);
 
     }
