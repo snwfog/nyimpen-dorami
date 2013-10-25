@@ -178,23 +178,26 @@ namespace FoodFight
      */
     public void DeflectDirection()
     {
-      // Compute the deflection wheel, where 0 = North, going clockwise, NW = 7
-      int currentDirectionAsInt = (int) this.status;
-      // Proper deflection array because I am too lazy to do it object oritented
-      int[,] deflectionTable = new int[,]
+      if (this.status != Status.IDLE)
       {
-        {2, 3, 4, 5, 6}, // 0
-        {3, 4, 5, 6, 7}, // 1
-        {4, 5, 6, 7, 0}, // 2
-        {5, 6, 7, 0, 1}, // 3
-        {6, 7, 0, 1, 2}, // 4
-        {7, 0, 1, 2, 3}, // 5
-        {0, 1, 2, 3, 4}, // 6
-        {1, 2, 3, 4, 5}  // 7
-      };
+        // Compute the deflection wheel, where 0 = North, going clockwise, NW = 7
+        int currentDirectionAsInt = (int) this.status;
+        // Proper deflection array because I am too lazy to do it object oritented
+        int[,] deflectionTable = new int[,]
+        {
+          {2, 3, 4, 5, 6}, // 0
+          {3, 4, 5, 6, 7}, // 1
+          {4, 5, 6, 7, 0}, // 2
+          {5, 6, 7, 0, 1}, // 3
+          {6, 7, 0, 1, 2}, // 4
+          {7, 0, 1, 2, 3}, // 5
+          {0, 1, 2, 3, 4}, // 6
+          {1, 2, 3, 4, 5}  // 7
+        };
 
-      int nextDirectionAsInt = deflectionTable[currentDirectionAsInt, rand.Next(0, 5)];
-      this.status = (Status) nextDirectionAsInt;
+        int nextDirectionAsInt = deflectionTable[currentDirectionAsInt, rand.Next(0, 5)];
+        this.status = (Status) nextDirectionAsInt;
+      }
     }
 
 
