@@ -10,7 +10,7 @@ namespace FoodFight
 {
   class SatsuiNoHadoDoraemon : NonPlayableCharacter, Shootable
   {
-    private int AmmoCount { get; set; }
+    public int AmmoCount { get; set; }
     private List<Projectile> ammoRack;
     private Color tint { get; set; }
     public SatsuiNoHadoDoraemon(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY,

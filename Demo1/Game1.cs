@@ -105,9 +105,9 @@ namespace Demo1
         SatsuiNoHadoDoraemon hadoDoraemon = new SatsuiNoHadoDoraemon(hadoDoraemonTexture, hadoDoraemonInitialPosition, 6, 8, ref hadoDoraemonLineSprite, true);
         badGuysTM.Add(hadoDoraemon);
 
-        for (int j = 0; j < hadoDoraemon.AmmoCount(); j++)
+        for (int j = 0; j < hadoDoraemon.AmmoCount; j++)
           hadoDoraemon.ChargeAmmo(new Projectile(project
-            , hadoDoraemon.position(), 6, 8, hadoDoraemonLineSprite, hadoDoraemon));
+            , hadoDoraemon.finalPosition, 6, 8, hadoDoraemonLineSprite, hadoDoraemon));
       }
 
 

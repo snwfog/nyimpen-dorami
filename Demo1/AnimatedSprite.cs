@@ -14,7 +14,7 @@ namespace Demo1
   {
     public static Random rand = new Random();
     protected Texture2D texture;
-    protected Vector2 position { get; set; }
+    protected Vector2 position;
     protected int nbMaxFramesX;
     protected int nbMaxFramesY;
     protected int currentFrame;
@@ -35,6 +35,7 @@ namespace Demo1
     {
       this.texture = texture;
       this.position = position;
+      this.finalPosition = position;
       this.nbMaxFramesX = nbMaxFramesX;
       this.nbMaxFramesY = nbMaxFramesY;
       this.lineSpritesAccToStatus = lineSpriteAccToStatus;
