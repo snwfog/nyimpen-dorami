@@ -57,7 +57,9 @@
     <Compile Include="AirGun.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Character.cs" />
-    <Compile Include="Game1.cs" />
+    <Compile Include="Dorami.cs" />
+    <Compile Include="StatefulUIPanel.cs" />
+    <Compile Include="FoodFightGame.cs" />
     <Compile Include="NonPlayableCharacter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projectile.cs" />
@@ -65,6 +67,7 @@
     <Compile Include="SatsuiNoHadoDoraemon.cs" />
     <Compile Include="Shootable.cs" />
     <Compile Include="Sprite2D.cs" />
+    <Compile Include="IStatefulCharacter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -86,9 +89,6 @@
     <Content Include="Content\canon-on-the-ground.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\doarmi-health.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\doraemon-walk-shadow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -98,7 +98,7 @@
     <Content Include="Content\doraemon-walk.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\dorami-shadow.png">
+    <Content Include="Content\dorami-health.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\dorami.png">

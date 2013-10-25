@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Demo1;
+using Assignment1;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  class Projectile : AnimatedSprite
+  public class Projectile : AnimatedSprite
   {
     protected AnimatedSprite owner;
     protected Rectangle hitBox;
     protected float velocity;
 
-    public Projectile(Texture2D texture, Vector2 position, int nbMaxFrameX, int nbMaxFramesY,
-      ref int[] lineSpriteAccToStatus, AnimatedSprite owner) : base(texture, position, nbMaxFrameX, nbMaxFramesY, ref lineSpriteAccToStatus)
+    public Projectile(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFrameX, int nbMaxFramesY,
+      ref int[] lineSpriteAccToStatus, AnimatedSprite owner) : base(level, texture, position, nbMaxFrameX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.velocity = 0.7f;
+      this.owner = owner;
 
       if (owner.status != Status.IDLE)
       {

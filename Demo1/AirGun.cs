@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
-using Demo1;
+using Assignment1;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  class AirGun : AnimatedSprite
+  public class AirGun : AnimatedSprite
   {
     private int Ammo { get; set; }
     private bool IsConsumed { get; set; }
@@ -18,8 +18,8 @@ namespace FoodFight
     private const int MAX_TTL = 40 * 1000;
     private int timeToLive = rand.Next(MIN_TTL, MAX_TTL);
 
-    public AirGun(Texture2D texture, Vector2 position, ref int[] lineSpriteAccToStatus)
-      : base(texture, position, 1, 1, ref lineSpriteAccToStatus)
+    public AirGun(FoodFightGame level, Texture2D texture, Vector2 position, ref int[] lineSpriteAccToStatus)
+      : base(level, texture, position, 1, 1, ref lineSpriteAccToStatus)
     {
       this.Ammo = 3;
       this.status = Status.IDLE;

@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assignment1;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  class SatsuiNoHadoDoraemon : NonPlayableCharacter, Shootable
+  public class SatsuiNoHadoDoraemon : NonPlayableCharacter, Shootable
   {
     public int AmmoCount { get; set; }
     private List<Projectile> ammoRack;
     private Color tint { get; set; }
-    public SatsuiNoHadoDoraemon(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY,
+    public SatsuiNoHadoDoraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY,
       ref int[] lineSpriteAccToStatus, bool isMovable)
-      : base(texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus, isMovable)
+      : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus, isMovable)
     {
       int r = rand.Next(0, 255);
       int g = rand.Next(0, 255);
@@ -36,6 +37,23 @@ namespace FoodFight
     public void Shoot()
     {
 
+    }
+
+    public override void Update(GameTime gameClock, Rectangle yard)
+    {
+      // Check the interaction with the rest of the world objects in the game
+      List<SatsuiNoHadoDoraemon> badGuysTM = this.gameLevel.BadGuysTM;
+      foreach (SatsuiNoHadoDoraemon badDora in badGuysTM)
+      {
+        if (badDora != this && this.WillCollideWith(badDora))
+        {
+          if (this.status != Status.IDLE)
+            this.DeflectDirection();
+          if (badDora.status != Status.IDLE)
+            badDora.DeflectDirection();
+        }
+      }
+      base.Update(gameClock, yard);
     }
 
     public new void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)

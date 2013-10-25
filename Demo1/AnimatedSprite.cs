@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -8,10 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenTK;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace Demo1
+namespace Assignment1
 {
-  abstract class AnimatedSprite
+  abstract public class AnimatedSprite
   {
+    protected FoodFightGame gameLevel;
     public static Random rand = new Random();
     protected Texture2D texture;
     protected Vector2 position;
@@ -30,9 +32,10 @@ namespace Demo1
     public Vector2 finalPosition { get; set; }
     public Vector2 hitBoxSize { get; set; }
 
-    public AnimatedSprite(Texture2D texture, Vector2 position,
-        int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
+    // Could pass the level as a ref
+    public AnimatedSprite(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
     {
+      this.gameLevel = level;
       this.texture = texture;
       this.position = position;
       this.finalPosition = position;
@@ -44,6 +47,15 @@ namespace Demo1
       this.hitBoxSize = this.sizeSprite;
     }
 
+    public virtual Rectangle GetHitBoxAsRectangle(Vector2 newPosition)
+    {
+      int x = (int) (this.position.X + newPosition.X);
+      int y = (int) (this.position.Y + newPosition.Y);
+      int xSize = (int) hitBoxSize.X;
+      int ySize = (int) hitBoxSize.Y;
+      return new Rectangle(x, y, xSize, ySize);
+    }
+
     public virtual Rectangle GetHitBoxAsRectangle()
     {
       int x = (int)this.position.X;
@@ -52,6 +64,59 @@ namespace Demo1
       int ySize = (int)hitBoxSize.Y;
       return new Rectangle(x, y, xSize, ySize);
     }
+
+    public Vector2 GetDirection()
+    {
+      Vector2 newDirection = Vector2.Zero;
+      switch (this.status)
+      {
+        case Status.NE:
+          // NE
+          //this.status = Status.NE;
+          newDirection = new Vector2(0.707f, -0.707f);
+          break;
+        case Status.SE:
+          // SE
+          //this.status = Status.SE;
+          newDirection = new Vector2(0.707f, 0.707f);
+          break;
+        case Status.SW:
+          // SW
+          //this.status = Status.SW;
+          newDirection = new Vector2(-0.707f, 0.707f);
+          break;
+        case Status.NW:
+          // NW
+          //this.status = Status.NW;
+          newDirection = new Vector2(-0.707f, -0.707f);
+          break;
+        case Status.N:
+          // N
+          //this.status = Status.N;
+          newDirection = new Vector2(0.0f, -1.0f);
+          break;
+        case Status.E:
+          // E
+          //this.status = Status.E;
+          newDirection = new Vector2(1.0f, 0.0f);
+          break;
+        case Status.S:
+          // S
+          //this.status = Status.S;
+          newDirection = new Vector2(0.0f, 1.0f);
+          break;
+        case Status.W:
+          // W
+          //this.status = Status.W;
+          newDirection = new Vector2(-1.0f, 0.0f);
+          break;
+        default:
+          break;
+      }
+
+      return newDirection;
+    }
+
 
     public bool CheckCollision(AnimatedSprite sprite)
     {
@@ -103,7 +168,7 @@ namespace Demo1
       // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
       // Get the z-index from height
       float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
-      spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None,  zIndex);
+      spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, zIndex);
 
     }
   }

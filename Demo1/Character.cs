@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using Demo1;
+using Assignment1;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,8 +16,8 @@ namespace FoodFight
     private Vector2 direction { get; set; }
     private float velocity { get; set; }
 
-    public Character(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
-      : base(texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
+    public Character(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
+      : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.status = Status.W;
       this.velocity = 5.6f;

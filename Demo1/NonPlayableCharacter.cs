@@ -3,35 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Demo1;
+using Assignment1;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  class NonPlayableCharacter : AnimatedSprite
+  public class NonPlayableCharacter : AnimatedSprite
   {
 
-    private int update_interval { get; set; }
-    private int update_timer { get; set; }
+    protected int update_interval { get; set; }
+    protected int update_timer { get; set; }
     private float velocity { get; set; }
 
 
-    public NonPlayableCharacter(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus, bool isMovable) : base(texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
+    public NonPlayableCharacter(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus, bool isMovable) : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.status = Status.IDLE;
       this.update_interval = 2000; // 2 seconds
       this.isMovable = isMovable;
       this.velocity = 0.6f;
       this.hitBoxSize = new Vector2(32, 16);
+    }    public new Rectangle GetHitBoxAsRectangle(Vector2 newPosition)
+    {
+      int x = (int) (this.position.X + newPosition.X);
+      int y = (int) (this.position.Y + newPosition.Y + 16);
+      int xSize = (int) hitBoxSize.X;
+      int ySize = (int) hitBoxSize.Y;
+      return new Rectangle(x, y, xSize, ySize);
     }
 
     public override Rectangle GetHitBoxAsRectangle()
     {
-      int x = (int)this.position.X;
+      int x = (int) this.position.X;
       int y = (int) this.position.Y + 16; // Half height to give the isometric view effect
-      int xSize = (int)hitBoxSize.X;
-      int ySize = (int)hitBoxSize.Y;
+      int xSize = (int) hitBoxSize.X;
+      int ySize = (int) hitBoxSize.Y;
       return new Rectangle(x, y, xSize, ySize);
     }
 
@@ -81,6 +88,12 @@ namespace FoodFight
       }
 
       base.Update(gameClock, yard);
+    }
+
+
+    public bool WillCollideWith(AnimatedSprite sprite)
+    {
+      return this.GetHitBoxAsRectangle(Vector2.Add(this.position, Vector2.Multiply(this.GetDirection(), this.velocity))).Intersects(sprite.GetHitBoxAsRectangle());
     }
 
     public void Move(GameTime gameClock, Rectangle yard)
@@ -201,7 +214,7 @@ namespace FoodFight
     }
 
 
-    public new void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
+    public override void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
     {
       finalPosition = this.position;
       base.Draw(spriteBatch, cameraPosition);

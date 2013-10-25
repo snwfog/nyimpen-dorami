@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 #endregion
 
-namespace Demo1
+namespace Assignment1
 {
 #if WINDOWS || LINUX
     /// <summary>
@@ -18,7 +18,7 @@ namespace Demo1
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (var game = new FoodFightGame())
                 game.Run();
         }
     }
