@@ -117,7 +117,7 @@ namespace Demo1
     {
       // 50% of spawning a gun, while the rack is not yet full
 
-      if (AnimatedSprite.rand.Next(50, 100) >= 50 && ammoRack.Count < maxNumberOfAirGuns)
+      if (AnimatedSprite.rand.Next(0, 60) >= 50 && ammoRack.Count < maxNumberOfAirGuns)
       {
         int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
         int y = AnimatedSprite.rand.Next(bound.Top, bound.Bottom);
