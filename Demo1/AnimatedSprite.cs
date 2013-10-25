@@ -14,7 +14,7 @@ namespace Demo1
   {
     public static Random rand = new Random();
     protected Texture2D texture;
-    protected Vector2 position;
+    protected Vector2 position { get; set; }
     protected int nbMaxFramesX;
     protected int nbMaxFramesY;
     protected int currentFrame;
@@ -27,7 +27,7 @@ namespace Demo1
     public Status idleStatus { get; set; }
     protected bool isMovable { get; set; }
     protected int[] lineSpritesAccToStatus;
-    public Vector2 finalPosition;
+    public Vector2 finalPosition { get; set; }
     public Vector2 hitBoxSize { get; set; }
 
     public AnimatedSprite(Texture2D texture, Vector2 position,

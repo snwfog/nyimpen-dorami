@@ -60,8 +60,10 @@
     <Compile Include="Game1.cs" />
     <Compile Include="NonPlayableCharacter.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SatsuiNoHadoDoraemon.cs" />
+    <Compile Include="Shootable.cs" />
     <Compile Include="Sprite2D.cs" />
   </ItemGroup>
   <ItemGroup>

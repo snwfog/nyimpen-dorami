@@ -11,7 +11,7 @@ namespace FoodFight
   class SatsuiNoHadoDoraemon : NonPlayableCharacter, Shootable
   {
     private int AmmoCount { get; set; }
-    private int List<Projectile> ammoRack;
+    private List<Projectile> ammoRack;
     private Color tint { get; set; }
     public SatsuiNoHadoDoraemon(Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY,
       ref int[] lineSpriteAccToStatus, bool isMovable)
@@ -23,7 +23,7 @@ namespace FoodFight
       tint = new Color(r, g, b);
       status = Status.IDLE;
       idleStatus = Status.S;
-      ammoCount = 10000; // Essentially unlimited ammo
+      AmmoCount = 10000; // Essentially unlimited ammo
       ammoRack = new List<Projectile>();
     }
 
