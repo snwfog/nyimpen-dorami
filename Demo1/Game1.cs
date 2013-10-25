@@ -106,8 +106,7 @@ namespace Demo1
         badGuysTM.Add(hadoDoraemon);
 
         for (int j = 0; j < hadoDoraemon.AmmoCount; j++)
-          hadoDoraemon.ChargeAmmo(new Projectile(project
-            , hadoDoraemon.finalPosition, 6, 8, hadoDoraemonLineSprite, hadoDoraemon));
+          hadoDoraemon.ChargeAmmo(new Projectile(projectileTexture2D, hadoDoraemon.finalPosition, 6, 8, hadoDoraemonLineSprite, hadoDoraemon));
       }
 
 

@@ -17,6 +17,8 @@ namespace FoodFight
     public Projectile(Texture2D texture, Vector2 position, int nbMaxFrameX, int nbMaxFramesY,
       ref int[] lineSpriteAccToStatus, AnimatedSprite owner) : base(texture, position, nbMaxFrameX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
+      this.velocity = 0.7f;
+
       if (owner.status != Status.IDLE)
       {
         this.status = owner.status;
