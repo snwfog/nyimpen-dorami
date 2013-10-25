@@ -106,14 +106,17 @@ namespace FoodFight
       {
         Vector2 nextPosition = this.position + Vector2.Multiply(this.direction, this.velocity);
         // Compute a new bounding box for this character sprite
-        if (this.isBounded(nextPosition, yard))
+        if (this.IsBounded(nextPosition, yard))
           this.position += Vector2.Multiply(this.direction, this.velocity);
       }
     }
 
-    protected bool isBounded(Vector2 newPosition, Rectangle bound)
+    protected bool IsBounded(Vector2 newPosition, Rectangle bound)
     {
-      Rectangle newBoundingBox = new Rectangle((int)newPosition.X, (int)newPosition.Y, (int)sizeSprite.X, (int)sizeSprite.Y);
+      float hitBoxX = newPosition.X + sizeSprite.X - hitBoxSize.X;
+      float hitBoxY = newPosition.Y + sizeSprite.Y - hitBoxSize.Y;
+
+      Rectangle newBoundingBox = new Rectangle((int)hitBoxX, (int)hitBoxY, (int)hitBoxSize.X, (int)hitBoxSize.Y);
       return (bound.Contains(newBoundingBox));
     }
 

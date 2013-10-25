@@ -153,7 +153,10 @@ namespace FoodFight
 
     protected bool IsBounded(Vector2 newPosition, Rectangle bound)
     {
-      Rectangle newBoundingBox = this.GetHitBoxAsRectangle();
+      float hitBoxX = newPosition.X + sizeSprite.X - hitBoxSize.X;
+      float hitBoxY = newPosition.Y + sizeSprite.Y - hitBoxSize.Y;
+
+      Rectangle newBoundingBox = new Rectangle((int)hitBoxX, (int)hitBoxY, (int)hitBoxSize.X, (int)hitBoxSize.Y);
       return (bound.Contains(newBoundingBox));
     }
 

@@ -31,13 +31,13 @@ namespace Demo1
     public Vector2 hitBoxSize { get; set; }
 
     public AnimatedSprite(Texture2D texture, Vector2 position,
-        int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSrpiteAccToStatus)
+        int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
     {
       this.texture = texture;
       this.position = position;
       this.nbMaxFramesX = nbMaxFramesX;
       this.nbMaxFramesY = nbMaxFramesY;
-      this.lineSpritesAccToStatus = lineSrpiteAccToStatus;
+      this.lineSpritesAccToStatus = lineSpriteAccToStatus;
       this.sizeSprite = new Vector2(this.texture.Width / this.nbMaxFramesX, texture.Height / this.nbMaxFramesY);
       this.currentFrame = nbMaxFramesX * lineSpritesAccToStatus[(int) status];
       this.hitBoxSize = this.sizeSprite;

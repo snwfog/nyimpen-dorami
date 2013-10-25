@@ -21,8 +21,10 @@ namespace Demo1
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
 
-    private List<SatsuiNoHadoDoraemon> badGuysTM; // TM for Trademark
-    private int numberOfBadGuysTM = 4;
+    private int maxNumberOfBadGuysTM = 4;
+    private List<SatsuiNoHadoDoraemon> badGuysTM; // TM for Trademark lol
+    private int maxNumberOfAirGuns = 2;
+    private List<AirGun> ammoRack;
     private Character doraemon;
     private NonPlayableCharacter dorami;
     private Sprite2D yard;
@@ -43,6 +45,7 @@ namespace Demo1
       Content.RootDirectory = "Content";
 
       badGuysTM = new List<SatsuiNoHadoDoraemon>();
+      ammoRack = new List<AirGun>();
     }
 
     protected override void Initialize()
@@ -82,7 +85,7 @@ namespace Demo1
       Texture2D hadoDoraemonTexture = Content.Load<Texture2D>("hado-doraemon-walk");
       Rectangle mobSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
       // Create Satsui No Hado Doraemon
-      for (int i = 1; i <= numberOfBadGuysTM; i++)
+      for (int i = 1; i <= maxNumberOfBadGuysTM; i++)
       {
         int x = AnimatedSprite.rand.Next(mobSpawnBound.Left, mobSpawnBound.Right);
         int y = AnimatedSprite.rand.Next(mobSpawnBound.Top, mobSpawnBound.Bottom);
@@ -99,9 +102,33 @@ namespace Demo1
 
         SatsuiNoHadoDoraemon hadoDoraemon = new SatsuiNoHadoDoraemon(hadoDoraemonTexture, hadoDoraemonInitialPosition, 6, 8, ref hadoDoraemonLineSprite, true);
         badGuysTM.Add(hadoDoraemon);
+      }
 
+
+      // Create Air gun
+      Texture2D airGunTexture2D = Content.Load<Texture2D>("canon-on-the-ground");
+      Rectangle airGunSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
+      // Give 2 chance of creating airgun, after this, it will be determined by the Update method
+      for (int i = 1; i <= maxNumberOfAirGuns; i++)
+        this.SpawnAirGun(airGunSpawnBound, airGunTexture2D);
+    }
+
+    private void SpawnAirGun(Rectangle bound, Texture2D airGunTexture)
+    {
+      // 50% of spawning a gun, while the rack is not yet full
+
+      if (AnimatedSprite.rand.Next(50, 100) >= 50 && ammoRack.Count < maxNumberOfAirGuns)
+      {
+        int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
+        int y = AnimatedSprite.rand.Next(bound.Top, bound.Bottom);
+        Vector2 airGunSpawnPosition = new Vector2(x, y);
+        int[] airGunLineSprite = new int[1];
+        airGunLineSprite[(int)AnimatedSprite.Status.N] = 0;
+        ammoRack.Add(new AirGun(airGunTexture, airGunSpawnPosition, ref airGunLineSprite));
       }
     }
+
+
 
     protected override void LoadContent()
     {
@@ -130,6 +157,13 @@ namespace Demo1
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
         this.Exit();
 
+      // Update the air guns
+      foreach (AirGun gun in ammoRack)
+      {
+
+      }
+
+
       doraemon.Update(gameTime, yardBound);
       dorami.Update(gameTime, yardBound);
 
@@ -148,12 +182,14 @@ namespace Demo1
     {
       graphics.GraphicsDevice.Clear(Color.Black);
 
-      // Draw the sprite using Alpha Blend, which uses transparency information if avaliable 
+      // Draw the sprite using Alpha Blend, which uses transparency information if avaliable
       spriteBatch.Begin();// (SpriteBlendMode.AlphaBlend);
       yard.Draw(spriteBatch);
       // mySprite1.Draw(spriteBatch);
       dorami.Draw(spriteBatch, Vector2.Zero);
       doraemon.Draw(spriteBatch, Vector2.Zero);
+      foreach (AirGun gun in ammoRack)
+        gun.Draw(spriteBatch, Vector2.Zero);
 
       foreach (SatsuiNoHadoDoraemon badDoraemon in badGuysTM)
         badDoraemon.Draw(spriteBatch, Vector2.Zero);
