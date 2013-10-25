@@ -21,7 +21,7 @@ namespace Demo1
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
 
-    private int maxNumberOfBadGuysTM = 4;
+    private int maxNumberOfBadGuysTM = 10;
     private List<SatsuiNoHadoDoraemon> badGuysTM; // TM for Trademark lol
     private int maxNumberOfAirGuns = 2;
     private List<AirGun> ammoRack;
