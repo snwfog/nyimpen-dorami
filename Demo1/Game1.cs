@@ -160,6 +160,7 @@ namespace Demo1
       // Respawns the airgun if necessary
       foreach (AirGun gun in ammoRack)
       {
+        gun.Update(gameTime, yardBound);
         if (gun.IsExpired())
         {
           if (AnimatedSprite.rand.Next(0, 100) >= 50)
