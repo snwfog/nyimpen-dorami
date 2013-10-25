@@ -23,6 +23,7 @@ namespace FoodFight
       this.status = Status.IDLE;
       this.idleStatus = Status.N;
       this.finalPosition = this.position;
+      this.IsConsumed = true;
     }
 
     public void ReRack(Rectangle bound)

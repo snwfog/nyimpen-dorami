@@ -115,17 +115,15 @@ namespace Demo1
 
     private void SpawnAirGun(Rectangle bound, Texture2D airGunTexture)
     {
-      // 50% of spawning a gun, while the rack is not yet full
-
-      if (AnimatedSprite.rand.Next(0, 100) == 99 && ammoRack.Count < maxNumberOfAirGuns)
-      {
-        int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
-        int y = AnimatedSprite.rand.Next(bound.Top, bound.Bottom);
-        Vector2 airGunSpawnPosition = new Vector2(x, y);
-        int[] airGunLineSprite = new int[1];
-        airGunLineSprite[(int)AnimatedSprite.Status.N] = 0;
-        ammoRack.Add(new AirGun(airGunTexture, airGunSpawnPosition, ref airGunLineSprite));
-      }
+      int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
+      int y = AnimatedSprite.rand.Next(bound.Top, bound.Bottom);
+      Vector2 airGunSpawnPosition = new Vector2(x, y);
+      int[] airGunLineSprite = new int[1];
+      airGunLineSprite[(int)AnimatedSprite.Status.N] = 0;
+      AirGun gun = new AirGun(airGunTexture, airGunSpawnPosition, ref airGunLineSprite);
+      if (AnimatedSprite.rand.Next(0, 100) == 99)
+        gun.ReRack(bound);
+      ammoRack.Add(gun);
     }
 
 
