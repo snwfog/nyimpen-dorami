@@ -158,11 +158,21 @@ namespace Demo1
         this.Exit();
 
       // Update the air guns
+      // Check if the existing air guns are expired
+      // If yes, then remove them from the ammo rack
       foreach (AirGun gun in ammoRack)
       {
-
+        if (gun.IsExpired())
+        {
+          // Null the airgun for garbage collection
+          gun = null;
+        }
       }
 
+      if (ammoRack.Count < maxNumberOfAirGuns)
+      {
+        this.SpawnAirGun();
+      }
 
       doraemon.Update(gameTime, yardBound);
       dorami.Update(gameTime, yardBound);
