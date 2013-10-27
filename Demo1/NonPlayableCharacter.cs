@@ -14,7 +14,7 @@ namespace FoodFight
 
     protected int update_interval { get; set; }
     protected int update_timer { get; set; }
-    private float velocity { get; set; }
+    protected float velocity { get; set; }
 
 
     public NonPlayableCharacter(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus, bool isMovable) : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
@@ -22,24 +22,8 @@ namespace FoodFight
       this.status = Status.IDLE;
       this.update_interval = 2000; // 2 seconds
       this.isMovable = isMovable;
-      this.velocity = 0.6f;
-      this.hitBoxSize = new Vector2(32, 16);
-    }    public new Rectangle GetHitBoxAsRectangle(Vector2 newPosition)
-    {
-      int x = (int) (this.position.X + newPosition.X);
-      int y = (int) (this.position.Y + newPosition.Y + 16);
-      int xSize = (int) hitBoxSize.X;
-      int ySize = (int) hitBoxSize.Y;
-      return new Rectangle(x, y, xSize, ySize);
-    }
-
-    public override Rectangle GetHitBoxAsRectangle()
-    {
-      int x = (int) this.position.X;
-      int y = (int) this.position.Y + 16; // Half height to give the isometric view effect
-      int xSize = (int) hitBoxSize.X;
-      int ySize = (int) hitBoxSize.Y;
-      return new Rectangle(x, y, xSize, ySize);
+      this.velocity = 5.0f;
+      this.hitBox = new Rectangle(8, 20, 16, 11);
     }
 
     public override void Update(GameTime gameClock, Rectangle yard)
@@ -91,9 +75,31 @@ namespace FoodFight
     }
 
 
-    public bool WillCollideWith(AnimatedSprite sprite)
+    public bool WillCollideWith(NonPlayableCharacter sprite)
     {
-      return this.GetHitBoxAsRectangle(Vector2.Add(this.position, Vector2.Multiply(this.GetDirection(), this.velocity))).Intersects(sprite.GetHitBoxAsRectangle());
+      Rectangle thisHitBox, otherHitBox;
+      if (this.status != Status.IDLE)
+      {
+        Vector2 newPosition = this.position + Vector2.Multiply(this.GetDirection(), this.velocity);
+        thisHitBox = this.GetHitBoxAsRectangle(newPosition);
+      }
+      else
+      {
+        thisHitBox = GetHitBoxAsRectangle();
+      }
+
+      if (sprite.status != Status.IDLE)
+      {
+        Vector2 newPosition = sprite.position + Vector2.Multiply(sprite.GetDirection(), sprite.velocity);
+        otherHitBox = sprite.GetHitBoxAsRectangle(newPosition);
+      }
+      else
+      {
+        otherHitBox = sprite.GetHitBoxAsRectangle();
+      }
+
+      return thisHitBox.Intersects(otherHitBox) && otherHitBox.Intersects(thisHitBox);
+      // return false;
     }
 
     public void Move(GameTime gameClock, Rectangle yard)
@@ -166,11 +172,7 @@ namespace FoodFight
 
     protected bool IsBounded(Vector2 newPosition, Rectangle bound)
     {
-      float hitBoxX = newPosition.X + sizeSprite.X - hitBoxSize.X;
-      float hitBoxY = newPosition.Y + sizeSprite.Y - hitBoxSize.Y;
-
-      Rectangle newBoundingBox = new Rectangle((int)hitBoxX, (int)hitBoxY, (int)hitBoxSize.X, (int)hitBoxSize.Y);
-      return (bound.Contains(newBoundingBox));
+      return bound.Contains(this.GetHitBoxAsRectangle(newPosition));
     }
 
     private void CheckBoundaryAndMove(Vector2 newDirection, Rectangle yard)

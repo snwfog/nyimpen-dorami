@@ -12,10 +12,12 @@ namespace FoodFight
 {
   public class Dorami : NonPlayableCharacter, IStatefulCharacter
   {
+    private int totalHealth;
     public int Health { get; set; }
     public Dorami(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesY, ref int[] lineSpriteAccToStatus) : base(level, texture, position, 1, nbMaxFramesY, ref lineSpriteAccToStatus, false)
     {
       this.Health = nbMaxFramesY;
+      this.totalHealth = Health;
       this.update_interval = 1000 * 10; // 2 seconds
       this.finalPosition = this.position;
     }
@@ -46,9 +48,12 @@ namespace FoodFight
           Health = nbMaxFramesY;
 
         update_timer = 0;
+
+        Health = Health == 0 ? totalHealth : Health;
         //if (Health == 0)
         //  throw new GamerPrivilegeException();
       }
+
       base.Update(gameClock, yard);
     }
 

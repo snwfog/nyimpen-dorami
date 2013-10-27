@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Assignment1
     protected FoodFightGame gameLevel;
     public static Random rand = new Random();
     protected Texture2D texture;
-    protected Vector2 position;
+    public Vector2 position { get; set; }
     protected int nbMaxFramesX;
     protected int nbMaxFramesY;
     protected int currentFrame;
@@ -30,7 +31,7 @@ namespace Assignment1
     protected bool isMovable { get; set; }
     protected int[] lineSpritesAccToStatus;
     public Vector2 finalPosition { get; set; }
-    public Vector2 hitBoxSize { get; set; }
+    public Rectangle hitBox { get; set; }
 
     // Could pass the level as a ref
     public AnimatedSprite(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
@@ -44,25 +45,16 @@ namespace Assignment1
       this.lineSpritesAccToStatus = lineSpriteAccToStatus;
       this.sizeSprite = new Vector2(this.texture.Width / this.nbMaxFramesX, texture.Height / this.nbMaxFramesY);
       this.currentFrame = nbMaxFramesX * lineSpritesAccToStatus[(int) status];
-      this.hitBoxSize = this.sizeSprite;
     }
 
     public virtual Rectangle GetHitBoxAsRectangle(Vector2 newPosition)
     {
-      int x = (int) (this.position.X + newPosition.X);
-      int y = (int) (this.position.Y + newPosition.Y);
-      int xSize = (int) hitBoxSize.X;
-      int ySize = (int) hitBoxSize.Y;
-      return new Rectangle(x, y, xSize, ySize);
+      return new Rectangle((int)(newPosition.X + this.hitBox.X), (int)(newPosition.Y + this.hitBox.Y), this.hitBox.Width, this.hitBox.Height);
     }
 
     public virtual Rectangle GetHitBoxAsRectangle()
     {
-      int x = (int)this.position.X;
-      int y = (int) this.position.Y;
-      int xSize = (int)hitBoxSize.X;
-      int ySize = (int)hitBoxSize.Y;
-      return new Rectangle(x, y, xSize, ySize);
+      return new Rectangle((int)(this.position.X + this.hitBox.X), (int)(this.position.Y + this.hitBox.Y), this.hitBox.Width, this.hitBox.Height);
     }
 
     public Vector2 GetDirection()
@@ -120,7 +112,9 @@ namespace Assignment1
 
     public bool CheckCollision(AnimatedSprite sprite)
     {
-      return this.GetHitBoxAsRectangle().Intersects(sprite.GetHitBoxAsRectangle());
+      Rectangle thisHitBox = this.GetHitBoxAsRectangle();
+      Rectangle otherHitBox = sprite.GetHitBoxAsRectangle();
+      return thisHitBox.Intersects(otherHitBox);
     }
 
     public Vector2 GetLocalPosition(int viewportWidth)
@@ -167,8 +161,9 @@ namespace Assignment1
       // Adds a sprite to a batch of sprites for rendering using the specified texture, destination rectangle, source rectangle, color, rotation, origin, effects and layer
       // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
       // Get the z-index from height
-      float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
-      spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, zIndex);
+      // float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
+      spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+      spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
 
     }
   }

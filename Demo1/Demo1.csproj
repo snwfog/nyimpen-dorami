@@ -57,6 +57,7 @@
     <Compile Include="AirGun.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Character.cs" />
+    <Compile Include="Doraemon.cs" />
     <Compile Include="Dorami.cs" />
     <Compile Include="StatefulUIPanel.cs" />
     <Compile Include="FoodFightGame.cs" />

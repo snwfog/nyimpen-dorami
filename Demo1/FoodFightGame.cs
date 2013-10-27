@@ -1,6 +1,7 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters;
 using FoodFight;
 using Microsoft.Xna.Framework;
@@ -19,19 +20,20 @@ namespace Assignment1
 {
   public class FoodFightGame : Game
   {
-    GraphicsDeviceManager graphics;
+    public GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
 
-    private int maxNumberOfBadGuysTM = 20;
+    private int maxNumberOfBadGuysTM = 10;
     public List<SatsuiNoHadoDoraemon> BadGuysTM { get; set; }// TM for Trademark lol
     private int maxNumberOfAirGuns = 2;
     public List<AirGun> AmmoRack { get; set; }
-    private Character doraemon;
+    public List<Projectile> TotalFlyingProjectiles { get; set; } 
+    private Doraemon doraemon;
     private Dorami dorami;
     private StatefulUIPanel doramiUIPanel; 
     private Sprite2D yard;
-    private Rectangle yardBound { get; set; }
-    private Rectangle windowBound { get; set; }
+    public Rectangle yardBound { get; set; }
+    public Rectangle windowBound { get; set; }
     public const int GRID_SIZE = 32; // Which is also the standard size of all sprites...
 
     public FoodFightGame()
@@ -48,6 +50,7 @@ namespace Assignment1
 
       BadGuysTM = new List<SatsuiNoHadoDoraemon>();
       AmmoRack = new List<AirGun>();
+      TotalFlyingProjectiles = new List<Projectile>();
     }
 
     protected override void Initialize()
@@ -73,7 +76,7 @@ namespace Assignment1
       doraemonLineSprite[(int)AnimatedSprite.Status.SW] = 5;
       doraemonLineSprite[(int)AnimatedSprite.Status.W] = 6;
       doraemonLineSprite[(int)AnimatedSprite.Status.NW] = 7;
-      doraemon = new Character(this, doraemonTexture, doraemonInitialPosition, 6, 8, ref doraemonLineSprite);
+      doraemon = new Doraemon(this, doraemonTexture, doraemonInitialPosition, 6, 8, ref doraemonLineSprite);
 
 
       // Create Dorami character
@@ -97,7 +100,7 @@ namespace Assignment1
 
       // Create SatsuiNoHadoDoraemon
       Texture2D hadoDoraemonTexture = Content.Load<Texture2D>("hado-doraemon-walk");
-      Rectangle mobSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
+      Rectangle mobSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 3, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 6, yardBound.Bottom - GRID_SIZE * 2);
       // Load texture for the projectile sprite
       Texture2D projectileTexture2D = Content.Load<Texture2D>("projectiles");
       // Create Satsui No Hado Doraemon
@@ -117,10 +120,19 @@ namespace Assignment1
         hadoDoraemonLineSprite[(int)AnimatedSprite.Status.NW] = 7;
 
         SatsuiNoHadoDoraemon hadoDoraemon = new SatsuiNoHadoDoraemon(this, hadoDoraemonTexture, hadoDoraemonInitialPosition, 6, 8, ref hadoDoraemonLineSprite, true);
-        BadGuysTM.Add(hadoDoraemon);
+        for (int j = 0; j < BadGuysTM.Count; j++)
+        {
+          if (BadGuysTM[j].GetHitBoxAsRectangle().Intersects(hadoDoraemon.GetHitBoxAsRectangle()))
+          {
+            x = AnimatedSprite.rand.Next(mobSpawnBound.Left, mobSpawnBound.Right);
+            y = AnimatedSprite.rand.Next(mobSpawnBound.Top, mobSpawnBound.Bottom);
+            hadoDoraemonInitialPosition = new Vector2(x, y);
+            hadoDoraemon.position = hadoDoraemonInitialPosition;
+            j = 0;
+          }
+        }
 
-        for (int j = 0; j < hadoDoraemon.AmmoCount; j++)
-          hadoDoraemon.ChargeAmmo(new Projectile(this, projectileTexture2D, hadoDoraemon.finalPosition, 6, 8, ref hadoDoraemonLineSprite, hadoDoraemon));
+        BadGuysTM.Add(hadoDoraemon);
       }
 
 
@@ -192,8 +204,24 @@ namespace Assignment1
       doraemon.Update(gameTime, yardBound);
       dorami.Update(gameTime, yardBound);
 
-      foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM) badDoraemon.Update(gameTime, yardBound);
+      foreach (Projectile bullet in TotalFlyingProjectiles)
+      {
+        if (bullet.IsInTrajectory(windowBound))
+        {
+          // Check if current bullet is hitting doraemon
+          if (bullet.CheckCollision(doraemon))
+            throw new Exception("Game Over");
 
+          bullet.Update(gameTime, windowBound);
+        }
+      }
+
+      foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM)
+      {
+        if (badDoraemon.CheckCollision(doraemon))
+          throw new Exception("Game Over");
+        badDoraemon.Update(gameTime, yardBound);
+      }
       base.Update(gameTime);
     }
 
@@ -213,10 +241,11 @@ namespace Assignment1
       dorami.Draw(spriteBatch, Vector2.Zero);
       doramiUIPanel.Draw(spriteBatch, Vector2.Zero);
       doraemon.Draw(spriteBatch, Vector2.Zero);
+      foreach (Projectile bullet in TotalFlyingProjectiles) bullet.Draw(spriteBatch, Vector2.Zero);
       foreach (AirGun gun in AmmoRack) gun.Draw(spriteBatch, Vector2.Zero);
       foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM) badDoraemon.Draw(spriteBatch, Vector2.Zero);
-      spriteBatch.End();
 
+      spriteBatch.End();
       base.Draw(gameTime);
     }
   }

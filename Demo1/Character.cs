@@ -20,18 +20,9 @@ namespace FoodFight
       : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.status = Status.W;
-      this.velocity = 5.6f;
+      this.velocity = 2.6f;
       this.isMovable = true;
-      this.hitBoxSize = new Vector2(32, 16);
-    }
-
-    public override Rectangle GetHitBoxAsRectangle()
-    {
-      int x = (int)this.position.X;
-      int y = (int) this.position.Y + 16; // Half height to give the isometric view effect
-      int xSize = (int)hitBoxSize.X;
-      int ySize = (int)hitBoxSize.Y;
-      return new Rectangle(x, y, xSize, ySize);
+      this.hitBox = new Rectangle(8, 20, 16, 11);
     }
 
     public override void Update(GameTime gameClock, Rectangle yard)
@@ -112,14 +103,10 @@ namespace FoodFight
 
     protected bool IsBounded(Vector2 newPosition, Rectangle bound)
     {
-      float hitBoxX = newPosition.X + sizeSprite.X - hitBoxSize.X;
-      float hitBoxY = newPosition.Y + sizeSprite.Y - hitBoxSize.Y;
-
-      Rectangle newBoundingBox = new Rectangle((int)hitBoxX, (int)hitBoxY, (int)hitBoxSize.X, (int)hitBoxSize.Y);
-      return (bound.Contains(newBoundingBox));
+      return bound.Contains(this.GetHitBoxAsRectangle(newPosition));
     }
 
-    public new void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
+    public override void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
     {
       finalPosition = this.position;
       base.Draw(spriteBatch, cameraPosition);
