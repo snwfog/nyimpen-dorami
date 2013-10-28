@@ -28,7 +28,7 @@ namespace Assignment1
     private int maxNumberOfAirGuns = 2;
     public List<AirGun> AmmoRack { get; set; }
     public List<Projectile> TotalFlyingProjectiles { get; set; } 
-    private Doraemon doraemon;
+    public Doraemon doraemon { get; set; }
     private Dorami dorami;
     private StatefulUIPanel doramiUIPanel; 
     private Sprite2D yard;
@@ -137,28 +137,9 @@ namespace Assignment1
 
 
       // Create Air gun for pickup on the floor
-      Texture2D airGunTexture2D = Content.Load<Texture2D>("canon-on-the-ground");
-      Rectangle airGunSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
-      // Give 2 chance of creating airgun, after this, it will be determined by the Update method
-      for (int i = 1; i <= maxNumberOfAirGuns; i++)
-        this.SpawnAirGun(airGunSpawnBound, airGunTexture2D);
-
+      for (int i = 0; i < maxNumberOfAirGuns; i++)
+        AmmoRack.Add(AirGun.GetNewInstance());
     }
-
-    private void SpawnAirGun(Rectangle bound, Texture2D airGunTexture)
-    {
-      int x = AnimatedSprite.rand.Next(bound.Left, bound.Right);
-      int y = AnimatedSprite.rand.Next(bound.Top, bound.Bottom);
-      Vector2 airGunSpawnPosition = new Vector2(x, y);
-      int[] airGunLineSprite = new int[1];
-      airGunLineSprite[(int)AnimatedSprite.Status.N] = 0;
-      AirGun gun = new AirGun(this, airGunTexture, airGunSpawnPosition, ref airGunLineSprite);
-      if (AnimatedSprite.rand.Next(0, 100) == 99)
-        gun.ReRack(bound);
-      AmmoRack.Add(gun);
-    }
-
-
 
     protected override void LoadContent()
     {
@@ -187,42 +168,68 @@ namespace Assignment1
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
         this.Exit();
 
-      // Respawns the airgun if necessary
-      foreach (AirGun gun in AmmoRack)
+      dorami.Update(gameTime, yardBound);
+      if (dorami.CheckCollision(doraemon))
+        dorami.IsSaved = true;
+      else
       {
-        gun.Update(gameTime, yardBound);
-        if (gun.IsExpired())
+        // Respawns the airgun if necessary
+        for (int g = 0; g < AmmoRack.Count; g++)
         {
-          if (AnimatedSprite.rand.Next(0, 100) == 99)
+          AirGun gun = AmmoRack[g];
+          if (gun.CheckCollision(doraemon))
           {
-            Rectangle airGunSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 2, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 4, yardBound.Bottom - GRID_SIZE * 2);
-            gun.ReRack(airGunSpawnBound);
+            doraemon.PickUpGun(gun);
+            AmmoRack[g] = AirGun.GetNewInstance();
+            continue;
+          }
+          else
+          {
+            gun.Update(gameTime, yardBound);
+            if (gun.IsExpired())
+            {
+              // if (AnimatedSprite.rand.Next(0, 100) == 99)
+              if (AnimatedSprite.rand.Next(0, 100) >= 50)
+                AmmoRack[g] = AirGun.GetNewInstance();
+            }
           }
         }
-      }
 
-      doraemon.Update(gameTime, yardBound);
-      dorami.Update(gameTime, yardBound);
+        doraemon.Update(gameTime, yardBound);
 
-      foreach (Projectile bullet in TotalFlyingProjectiles)
-      {
-        if (bullet.IsInTrajectory(windowBound))
+        foreach (Projectile bullet in TotalFlyingProjectiles)
         {
-          // Check if current bullet is hitting doraemon
-          if (bullet.CheckCollision(doraemon))
-            throw new Exception("Game Over");
+          if (bullet.IsInTrajectory(windowBound))
+          {
+            // Check if current bullet is hitting doraemon
+            if (bullet.owner is SatsuiNoHadoDoraemon && bullet.CheckCollision(doraemon))
+              doraemon.KnockOut(5000);
+            else if (bullet.owner is Doraemon)
+            {
+              foreach (SatsuiNoHadoDoraemon badDora in BadGuysTM)
+              {
+                if (!badDora.IsKnockOut())
+                {
+                  if (badDora.CheckCollision(bullet))
+                  {
+                    badDora.KnockOut(10000);
+                  }
+                }
+              }
+            }
 
-          bullet.Update(gameTime, windowBound);
+            bullet.Update(gameTime, windowBound);
+          }
         }
-      }
 
-      foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM)
-      {
-        if (badDoraemon.CheckCollision(doraemon))
-          throw new Exception("Game Over");
-        badDoraemon.Update(gameTime, yardBound);
+        foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM)
+        {
+          if (!badDoraemon.IsKnockOut() && badDoraemon.CheckCollision(doraemon))
+            doraemon.KnockOut(5000);
+          badDoraemon.Update(gameTime, yardBound);
+        }
+        base.Update(gameTime);
       }
-      base.Update(gameTime);
     }
 
 

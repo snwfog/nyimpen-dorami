@@ -12,7 +12,7 @@ namespace FoodFight
 {
   public class Projectile : AnimatedSprite
   {
-    protected AnimatedSprite owner;
+    public AnimatedSprite owner { get; set; }
     protected float velocity;
 
     public Projectile(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFrameX, int nbMaxFramesY,
@@ -20,7 +20,11 @@ namespace FoodFight
     {
       this.velocity = 1.5f;
       this.owner = owner;
-      this.status = owner.status;
+      this.tint = owner.tint;
+      if (this.owner.status == Status.IDLE)
+        this.status = this.owner.idleStatus;
+      else
+        this.status = this.owner.status;
       this.setHitBoxRectangleAndSize();
       this.isMovable = true;
     }
@@ -83,6 +87,15 @@ namespace FoodFight
     {
       this.position += Vector2.Multiply(this.GetDirection(), this.velocity);
       this.finalPosition = this.position;
+    }
+
+    public override void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
+    {
+      int line = lineSpritesAccToStatus[(int) this.status];
+      Rectangle sourceRectangle = new Rectangle(0, line * (int)sizeSprite.Y, (int)sizeSprite.X, (int)sizeSprite.Y);
+
+      spriteBatch.Draw(texture, finalPosition, sourceRectangle, this.tint, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+      spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
     }
   }
 }

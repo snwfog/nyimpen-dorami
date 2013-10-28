@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FoodFight
 {
-  class Character : AnimatedSprite
+  public class Character : AnimatedSprite
   {
     private Vector2 direction { get; set; }
     private float velocity { get; set; }

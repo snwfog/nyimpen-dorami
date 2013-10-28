@@ -14,7 +14,8 @@ namespace Assignment1
 {
   abstract public class AnimatedSprite
   {
-    protected FoodFightGame gameLevel;
+    static protected FoodFightGame gameLevel;
+    public Color tint { get; set; }
     public static Random rand = new Random();
     protected Texture2D texture;
     public Vector2 position { get; set; }
@@ -36,7 +37,8 @@ namespace Assignment1
     // Could pass the level as a ref
     public AnimatedSprite(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
     {
-      this.gameLevel = level;
+      this.tint = Color.White;
+      gameLevel = level;
       this.texture = texture;
       this.position = position;
       this.finalPosition = position;
@@ -162,7 +164,7 @@ namespace Assignment1
       // spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
       // Get the z-index from height
       // float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
-      spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+      spriteBatch.Draw(texture, finalPosition, sourceRect, this.tint, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
       spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
 
     }
