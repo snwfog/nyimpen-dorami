@@ -25,8 +25,13 @@ namespace Assignment1
 
     private int maxNumberOfBadGuysTM = 10;
     public List<SatsuiNoHadoDoraemon> BadGuysTM { get; set; }// TM for Trademark lol
+
     private int maxNumberOfAirGuns = 2;
     public List<AirGun> AmmoRack { get; set; }
+
+    private int maxNumberOfPowerUp = 7;
+    public List<PowerUp> PowerUps { get; set; }
+
     public List<Projectile> TotalFlyingProjectiles { get; set; } 
     public Doraemon doraemon { get; set; }
     private Dorami dorami;
@@ -50,6 +55,7 @@ namespace Assignment1
 
       BadGuysTM = new List<SatsuiNoHadoDoraemon>();
       AmmoRack = new List<AirGun>();
+      PowerUps = new List<PowerUp>();
       TotalFlyingProjectiles = new List<Projectile>();
     }
 
@@ -100,45 +106,42 @@ namespace Assignment1
 
       // Create SatsuiNoHadoDoraemon
       Texture2D hadoDoraemonTexture = Content.Load<Texture2D>("hado-doraemon-walk");
-      Rectangle mobSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 3, yardBound.Top * 1, yardBound.Right - GRID_SIZE * 6, yardBound.Bottom - GRID_SIZE * 2);
+      Rectangle mobSpawnBound = new Rectangle(yardBound.Left + GRID_SIZE * 3, yardBound.Top * 1, yardBound.Width - GRID_SIZE * 6, yardBound.Height - GRID_SIZE * 2);
       // Load texture for the projectile sprite
       Texture2D projectileTexture2D = Content.Load<Texture2D>("projectiles");
+      // A list that keep track of all spawn points
+      List<Rectangle> allHadoDoraHitBox = new List<Rectangle>();
+      int[] hadoDoraemonLineSprite = new int[8];
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.N] = 0;
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.NE] = 1;
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.E] = 2;
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.SE] = 3;
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.S] = 4;
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.SW] = 5;
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.W] = 6;
+      hadoDoraemonLineSprite[(int)AnimatedSprite.Status.NW] = 7;
       // Create Satsui No Hado Doraemon
       for (int i = 1; i <= maxNumberOfBadGuysTM; i++)
       {
         int x = AnimatedSprite.rand.Next(mobSpawnBound.Left, mobSpawnBound.Right);
         int y = AnimatedSprite.rand.Next(mobSpawnBound.Top, mobSpawnBound.Bottom);
         Vector2 hadoDoraemonInitialPosition = new Vector2(x, y);
-        int[] hadoDoraemonLineSprite = new int[8];
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.N] = 0;
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.NE] = 1;
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.E] = 2;
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.SE] = 3;
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.S] = 4;
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.SW] = 5;
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.W] = 6;
-        hadoDoraemonLineSprite[(int)AnimatedSprite.Status.NW] = 7;
-
         SatsuiNoHadoDoraemon hadoDoraemon = new SatsuiNoHadoDoraemon(this, hadoDoraemonTexture, hadoDoraemonInitialPosition, 6, 8, ref hadoDoraemonLineSprite, true);
-        for (int j = 0; j < BadGuysTM.Count; j++)
-        {
-          if (BadGuysTM[j].GetHitBoxAsRectangle().Intersects(hadoDoraemon.GetHitBoxAsRectangle()))
-          {
-            x = AnimatedSprite.rand.Next(mobSpawnBound.Left, mobSpawnBound.Right);
-            y = AnimatedSprite.rand.Next(mobSpawnBound.Top, mobSpawnBound.Bottom);
-            hadoDoraemonInitialPosition = new Vector2(x, y);
-            hadoDoraemon.position = hadoDoraemonInitialPosition;
-            j = 0;
-          }
-        }
-
+        hadoDoraemonInitialPosition = Helper.GetNoOverLappingSpawnLocation(allHadoDoraHitBox, hadoDoraemon, mobSpawnBound);
+        hadoDoraemon.position = hadoDoraemonInitialPosition;
+        
         BadGuysTM.Add(hadoDoraemon);
+        allHadoDoraHitBox.Add(hadoDoraemon.GetHitBoxAsRectangle());
       }
 
 
       // Create Air gun for pickup on the floor
       for (int i = 0; i < maxNumberOfAirGuns; i++)
         AmmoRack.Add(AirGun.GetNewInstance());
+
+      // Create Power Ups for pickup on the floor
+      for (int i = 0; i < maxNumberOfPowerUp; i++)
+        PowerUps.Add(PowerUp.GetNewInstance());
     }
 
     protected override void LoadContent()
@@ -173,6 +176,12 @@ namespace Assignment1
         dorami.IsSaved = true;
       else
       {
+        // Update power ups
+        foreach (PowerUp powerUp in PowerUps)
+        {
+          powerUp.Update(gameTime, yardBound);
+        }
+
         // Respawns the airgun if necessary
         for (int g = 0; g < AmmoRack.Count; g++)
         {
@@ -188,14 +197,34 @@ namespace Assignment1
             gun.Update(gameTime, yardBound);
             if (gun.IsExpired())
             {
-              // if (AnimatedSprite.rand.Next(0, 100) == 99)
-              if (AnimatedSprite.rand.Next(0, 100) >= 50)
+              if (AnimatedSprite.rand.Next(0, 100) >= 90)
                 AmmoRack[g] = AirGun.GetNewInstance();
             }
           }
         }
 
         doraemon.Update(gameTime, yardBound);
+
+        for (int p = 0; p < PowerUps.Count; p++)
+        {
+          PowerUp up = PowerUps[p];
+          if (up.CheckCollision(doraemon))
+          {
+            doraemon.PickUpPowerUp(up);
+            //if (AnimatedSprite.rand.Next(0, 100) >= 90)
+            //  PowerUps[p] = PowerUp.GetNewInstance();
+            continue;
+          }
+          else
+          {
+            up.Update(gameTime, yardBound);
+            //if (up.IsExpired())
+            //{
+            //  if (AnimatedSprite.rand.Next(0, 100) >= 90)
+            //    PowerUps[p] = PowerUp.GetNewInstance();
+            //}
+          }
+        }
 
         foreach (Projectile bullet in TotalFlyingProjectiles)
         {
@@ -251,6 +280,7 @@ namespace Assignment1
       foreach (Projectile bullet in TotalFlyingProjectiles) bullet.Draw(spriteBatch, Vector2.Zero);
       foreach (AirGun gun in AmmoRack) gun.Draw(spriteBatch, Vector2.Zero);
       foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM) badDoraemon.Draw(spriteBatch, Vector2.Zero);
+      foreach (PowerUp powerUp in PowerUps) powerUp.Draw(spriteBatch, Vector2.Zero);
 
       spriteBatch.End();
       base.Draw(gameTime);

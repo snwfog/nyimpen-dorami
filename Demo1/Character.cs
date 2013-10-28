@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +15,12 @@ namespace FoodFight
   public class Character : AnimatedSprite
   {
     private Vector2 direction { get; set; }
-    private float velocity { get; set; }
+    protected float velocity { get; set; }
 
     public Character(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus)
       : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.status = Status.W;
-      this.velocity = 2.6f;
       this.isMovable = true;
       this.hitBox = new Rectangle(8, 20, 16, 11);
     }

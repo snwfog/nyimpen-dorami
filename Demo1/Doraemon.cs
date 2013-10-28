@@ -14,6 +14,7 @@ namespace FoodFight
 {
   public class Doraemon : Character, Shootable
   {
+    private int score;
 
     public static Texture2D ammoTexture;
     public List<Projectile> ammoRack { get; set; } 
@@ -34,6 +35,9 @@ namespace FoodFight
 
     public Doraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus): base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
+      this.score = 0;
+      this.velocity = 0.4f;
+
       this.tint = Color.White;
       MAX_FIRE_INTERVAL = 200;
       MIN_FIRE_INTERVAL = 200;
@@ -62,6 +66,12 @@ namespace FoodFight
     {
       this.gun = gun;
       gun.IsConsumed = true; // This code is brittle, should use observer pattern
+    }
+
+    public void PickUpPowerUp(PowerUp up)
+    {
+      this.score += up.point;
+      up.IsConsumed = true;
     }
 
     public bool IsKnockOut()
