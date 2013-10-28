@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assignment1;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -36,7 +37,7 @@ namespace FoodFight
     public Doraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus): base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.score = 0;
-      this.velocity = 0.4f;
+      this.velocity = 1.4f;
 
       this.tint = Color.White;
       MAX_FIRE_INTERVAL = 200;
@@ -66,12 +67,16 @@ namespace FoodFight
     {
       this.gun = gun;
       gun.IsConsumed = true; // This code is brittle, should use observer pattern
+      // Play pickup cue
+      gameLevel.soundBank.PlayCue("sound-pickup");
     }
 
     public void PickUpPowerUp(PowerUp up)
     {
       this.score += up.point;
       up.IsConsumed = true;
+      // Play pickup cue
+      gameLevel.soundBank.PlayCue("sound-pickup");
     }
 
     public bool IsKnockOut()
@@ -84,6 +89,8 @@ namespace FoodFight
       if (isKnockOut)
         return;
 
+      gameLevel.mainLoop.Pause();
+      gameLevel.soundBank.PlayCue("sound-died");
       isKnockOut = true;
       knockOutInterval = duration;
     }

@@ -39,7 +39,13 @@ namespace Assignment1
     private Sprite2D yard;
     public Rectangle yardBound { get; set; }
     public Rectangle windowBound { get; set; }
+
     public const int GRID_SIZE = 32; // Which is also the standard size of all sprites...
+
+    public AudioEngine engine { get; set; }
+    public SoundBank soundBank { get; set; }
+    public WaveBank waveBank { get; set; }
+    public Cue mainLoop { get; set; }
 
     public FoodFightGame()
     {
@@ -62,6 +68,14 @@ namespace Assignment1
     protected override void Initialize()
     {
       base.Initialize();
+
+      // Load the sound
+      engine = new AudioEngine("Content\\doraemon.xgs");
+      soundBank = new SoundBank(engine, "Content\\sound-bank.xsb");
+      waveBank = new WaveBank(engine, "Content\\wave-bank.xwb");
+      mainLoop = soundBank.GetCue("sound-cut-original");
+      mainLoop.Play();
+
       spriteBatch = new SpriteBatch(this.graphics.GraphicsDevice);
 
       // Load the background image
@@ -173,7 +187,12 @@ namespace Assignment1
 
       dorami.Update(gameTime, yardBound);
       if (dorami.CheckCollision(doraemon))
+      {
         dorami.IsSaved = true;
+        mainLoop.Pause();
+        Cue victory = soundBank.GetCue("sound-musicbox");
+        victory.Play();
+      }
       else
       {
         // Update power ups

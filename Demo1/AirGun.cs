@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assignment1;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
@@ -39,6 +40,9 @@ namespace FoodFight
       if (Ammo > 0)
       {
         Ammo--;
+        // Play shooting sound
+        Cue shoot = gameLevel.soundBank.GetCue("sound-shoot");
+        shoot.Play();
       }
       else
       {
