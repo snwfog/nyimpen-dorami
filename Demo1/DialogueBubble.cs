@@ -14,18 +14,26 @@ namespace FoodFight
   public class DialogueBubble : Sprite2D
   {
     public const int LINE_FEED = 20; // Determined empirically
+    public const int CHAR_FEED_INTERNVAL = 200; // Display a char every 200ms
 
-    private static Texture2D _bubbleTexture;
+    private static Texture2D _bubbleTextureMono;
+    private static Texture2D _bubbleTextureHasMore;
     private static SpriteFont _mono8;
-    private static Vector2 _textStartRelativeToBubbleBoundBox = new Vector2(12, 12);
+
+    // All number below are determined empirically
+    private static Vector2 _textWhenBubbleIsTop = new Vector2(12, 12);
+    private static Vector2 _textWhenBubbleIsBottom = new Vector2(12, 32);
     private static Vector2 _bubbleLeftTop = new Vector2(-130, -50);
     private static Vector2 _bubbleRightTop = new Vector2(-20, -50);
+    private static Vector2 _bubbleLeftBottom = new Vector2(-130, 30);
+    private static Vector2 _bubbleRightBottom = new Vector2(-20, 30);
 
     private static Rectangle _bubbleSpriteRightBottom = new Rectangle(186, 0, 186, 60);
     private static Rectangle _bubbleSpriteRightTop = new Rectangle(186, 60, 186, 60);
     private static Rectangle _bubbleSpriteLeftBottom = new Rectangle(0, 0, 186, 60);
     private static Rectangle _bubbleSpriteLeftTop = new Rectangle(0, 60, 186, 60);
     private Rectangle _sourceRectangle;
+    private Vector2 _textStartPosition;
 
     private enum XPositionRelativeToCenter { Left, Right }
     private enum YPositionRelativeToCenter { Top, Bottom }
@@ -42,25 +50,60 @@ namespace FoodFight
     private int _currentCharPosition;
     private int _currentRow;
     private int _currentRowCharPosition;
+    private List<int> scroller; 
+    private int _charDisplayTimer;
 
-    private DialogueBubble(Texture2D texture, Vector2 position, string message, XPositionRelativeToCenter xPos, YPositionRelativeToCenter yPos) : base(texture, position, Vector2.One)
+    private DialogueBubble(Texture2D texture, Vector2 speakerPosition, string message, XPositionRelativeToCenter xPos, YPositionRelativeToCenter yPos) : base(texture, speakerPosition, Vector2.One)
     {
-      if (_bubbleTexture == null)
-        _bubbleTexture = texture;
+      if (_bubbleTextureMono == null)
+        _bubbleTextureMono = texture;
       this._message = message;
       this._xPosition = xPos;
       this._yPosition = yPos;
 
-      if (this._xPosition == XPositionRelativeToCenter.Left)
-        this._sourceRectangle = _bubbleSpriteRightTop;
-      else
-        this._sourceRectangle = _bubbleSpriteLeftTop;
+      // Start at the message zero so we dont have to check for empty string
+      this._currentCharPosition = message.Length - message.Length; 
+
+      Vector2 actualPositionBasedOnScreenLocation = Vector2.Zero;
+
+      if (xPos == XPositionRelativeToCenter.Left)
+      {
+        if (yPos == YPositionRelativeToCenter.Top)
+        {
+          this.position = Vector2.Add(speakerPosition, _bubbleRightBottom);
+          this._sourceRectangle = _bubbleSpriteRightBottom;
+          this._textStartPosition = _textWhenBubbleIsBottom;
+        }
+        else
+        {
+          this.position = Vector2.Add(speakerPosition, _bubbleRightTop);
+          this._sourceRectangle = _bubbleSpriteRightTop;
+          this._textStartPosition = _textWhenBubbleIsTop;
+        }
+      }
+      else // xPos is at Right
+      {
+        if (yPos == YPositionRelativeToCenter.Top)
+        {
+          this.position = Vector2.Add(speakerPosition, _bubbleLeftBottom);
+          this._sourceRectangle = _bubbleSpriteLeftBottom;
+          this._textStartPosition = _textWhenBubbleIsBottom;
+        }
+        else
+        {
+          this.position = Vector2.Add(speakerPosition, _bubbleLeftTop);
+          this._sourceRectangle = _bubbleSpriteLeftTop;
+          this._textStartPosition = _textWhenBubbleIsTop;
+        }
+      }
     }
 
     public static DialogueBubble GetNewInstance(FoodFightGame level, Vector2 speakerPosition, string msg)
     {
-      if (_bubbleTexture == null)
-        _bubbleTexture = level.Content.Load<Texture2D>("speech");
+      if (_bubbleTextureMono == null)
+        _bubbleTextureMono = level.Content.Load<Texture2D>("speech");
+      if (_bubbleTextureHasMore == null)
+        _bubbleTextureHasMore = level.Content.Load<Texture2D>("speech-has-more");
       if (_mono8 == null)
         _mono8 = level.Content.Load<SpriteFont>("manaspace0");
 
@@ -72,12 +115,7 @@ namespace FoodFight
         ? YPositionRelativeToCenter.Bottom
         : YPositionRelativeToCenter.Top;
 
-      Vector2 actualPositionBasedOnScreenLocation = Vector2.Zero;
-      if (xPos == XPositionRelativeToCenter.Left)
-        actualPositionBasedOnScreenLocation = Vector2.Add(speakerPosition, _bubbleRightTop);
-      else
-        actualPositionBasedOnScreenLocation = Vector2.Add(speakerPosition, _bubbleLeftTop);
-      return new DialogueBubble(_bubbleTexture, actualPositionBasedOnScreenLocation, msg, xPos, yPos);
+      return new DialogueBubble(_bubbleTextureMono, speakerPosition, msg, xPos, yPos);
     }
 
     public bool IsPlaying()
@@ -85,10 +123,19 @@ namespace FoodFight
       return true;
     }
 
+    public void Update(GameTime gameTime)
+    {
+      _charDisplayTimer += gameTime.ElapsedGameTime.Milliseconds;
+      if (_charDisplayTimer >= CHAR_FEED_INTERNVAL)
+      {
+        
+      }
+    }
+
     public void Draw(SpriteBatch spriteBatch)
     {
-      spriteBatch.Draw(_bubbleTexture, this.position, this._sourceRectangle, Color.White);
-      spriteBatch.DrawString(_mono8, _message, Vector2.Add(this.position, _textStartRelativeToBubbleBoundBox), Color.White);
+      spriteBatch.Draw(_bubbleTextureHasMore, this.position, this._sourceRectangle, Color.White);
+      spriteBatch.DrawString(_mono8, _message, Vector2.Add(this.position, _textStartPosition), Color.White);
     }
   }
 }
