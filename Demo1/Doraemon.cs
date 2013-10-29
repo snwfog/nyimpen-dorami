@@ -32,7 +32,7 @@ namespace FoodFight
     private bool isKnockOut;
     private int knockOutTimer;
     private int knockOutInterval;
-    private AirGun gun;
+    public AirGun gun { get; set; }
 
     public Doraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus): base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {

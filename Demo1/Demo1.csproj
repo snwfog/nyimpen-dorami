@@ -55,6 +55,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AirGun.cs" />
+    <Compile Include="AmmoBoard.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Doraemon.cs" />

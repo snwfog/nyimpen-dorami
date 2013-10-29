@@ -41,6 +41,7 @@ namespace Assignment1
     public Doraemon doraemon { get; set; }
     private ScoreBoard scoreBoard;
     private TimeBoard timeBoard;
+    private AmmoBoard ammoBoard;
 
     private Dorami dorami;
     public StatefulUIPanel DoramiHealthPanel { get; set; }
@@ -78,7 +79,7 @@ namespace Assignment1
 
       MaxNumberOfAirGuns = 2;
       MaxNumberOfBadGuysTM = 2;
-      MaxNumberOfPowerUp = 90;
+      MaxNumberOfPowerUp = 2;
 
       BadGuysTM = new List<SatsuiNoHadoDoraemon>();
       AmmoRack = new List<AirGun>();
@@ -120,6 +121,7 @@ namespace Assignment1
       doraemon = new Doraemon(this, doraemonTexture, doraemonInitialPosition, 6, 8, ref doraemonLineSprite);
       scoreBoard = ScoreBoard.GetNewInstance(doraemon);
       timeBoard = TimeBoard.GetNewInstance(this);
+      ammoBoard = AmmoBoard.GetNewInstance(this);
 
 
       // Create Dorami character
@@ -368,6 +370,7 @@ namespace Assignment1
       doraemon.Draw(spriteBatch, Vector2.Zero);
       scoreBoard.Draw(spriteBatch, Vector2.Zero);
       timeBoard.Draw(spriteBatch, Vector2.Zero);
+      ammoBoard.Draw(spriteBatch);
       foreach (Projectile bullet in TotalFlyingProjectiles) bullet.Draw(spriteBatch, Vector2.Zero);
       foreach (AirGun gun in AmmoRack) gun.Draw(spriteBatch, Vector2.Zero);
       foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM) badDoraemon.Draw(spriteBatch, Vector2.Zero);
