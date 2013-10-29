@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  internal class Sprite2D
+  public class Sprite2D
   {
     public Texture2D texture { get; set; }
     public Vector2 position { get; set; }

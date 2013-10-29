@@ -58,6 +58,7 @@
     <Compile Include="AmmoBoard.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Character.cs" />
+    <Compile Include="DialogueBubble.cs" />
     <Compile Include="Doraemon.cs" />
     <Compile Include="Dorami.cs" />
     <Compile Include="GlacierPit.cs" />
@@ -146,6 +147,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\saved.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\speech.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\yard.png">

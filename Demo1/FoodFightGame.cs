@@ -30,6 +30,9 @@ namespace Assignment1
 
     public int MaxGameTime { get; set; }
 
+    private bool _introIsPlaying = true;
+    private DialogueBubble _intro;
+
     public GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
 
@@ -215,6 +218,10 @@ namespace Assignment1
       // Font
       mono8 = Content.Load<SpriteFont>("manaspace0");
       mono12 = Content.Load<SpriteFont>("manaspace12");
+
+      // Play intro
+      _intro = DialogueBubble.GetNewInstance(this, doraemon.position, "01234567890123456789");
+
     }
 
     public void Pause() { _isPaused = true; }
@@ -271,6 +278,7 @@ namespace Assignment1
       }
 
       if (this.IsPaused()) return;
+      if (this._introIsPlaying) return;
 
       dorami.Update(gameTime, yardBound);
       if (dorami.CheckCollision(doraemon))
@@ -415,7 +423,14 @@ namespace Assignment1
 
       spriteBatch.End();
 
-      if (this.IsPaused())
+      if (_introIsPlaying)
+      {
+        this.Pause();
+        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        _intro.Draw(spriteBatch);
+        spriteBatch.End();
+      }
+      else if (this.IsPaused())
       {
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
         spriteBatch.Draw(TransparentDarkTexture, windowBound, Color.White);
