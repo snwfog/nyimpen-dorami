@@ -24,7 +24,7 @@ namespace Assignment1
 {
   public class FoodFightGame : Game
   {
-    public bool DebugMode = true;
+    public bool DebugMode = false;
 
     private bool _isPaused;
 
@@ -419,7 +419,7 @@ namespace Assignment1
       {
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
         spriteBatch.Draw(TransparentDarkTexture, windowBound, Color.White);
-        spriteBatch.DrawString(mono12, "U(P)AUSE", new Vector2(windowBound.Center.X - 32, windowBound.Center.Y - 32), Color.White);
+        spriteBatch.DrawString(mono12, "U(P)AUSE", new Vector2(windowBound.Center.X - 50, windowBound.Center.Y - 32), Color.White);
         spriteBatch.End();
       }
       base.Draw(gameTime);

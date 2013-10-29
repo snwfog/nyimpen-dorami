@@ -39,7 +39,9 @@ namespace FoodFight
     public Doraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus): base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this._score = 20;
-      this.velocity = 0.4f;
+
+      if (level.DebugMode) this.velocity = 2.0f;
+      else this.velocity = 0.4f;
 
       this.tint = Color.White;
       MAX_FIRE_INTERVAL = 200;
@@ -60,8 +62,9 @@ namespace FoodFight
       doraemonWalkingWithoutGun = texture;
 
       AirGun defaultGun = new AirGun(level, level.Content.Load<Texture2D>("canon-on-the-ground"), Vector2.Zero, ref lineSpriteAccToStatus);
-      defaultGun.Ammo = 2;
 
+      if (level.DebugMode) defaultGun.Ammo = 9;
+      else defaultGun.Ammo = 2;
       this.gun = defaultGun;
     }
 

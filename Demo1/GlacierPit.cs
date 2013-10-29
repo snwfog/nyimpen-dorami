@@ -30,7 +30,7 @@ namespace FoodFight
       this._knockOutInterval = 5000;
       this._knockOutPenalty = 3;
 
-      this._hitBox = new Rectangle(6, 5, 20, 21);
+      this._hitBox = new Rectangle(6, 14, 20, 12);
       this._position = position;
     }
 
