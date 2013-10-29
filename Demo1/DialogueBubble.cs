@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Assignment1;
@@ -11,9 +12,13 @@ using OpenTK.Graphics.OpenGL;
 
 namespace FoodFight
 {
+  /// <summary>
+  /// 
+  /// CAUTIOUS!!! THIS WILL FAIL IF THE STARTING STRING LENGTH IS GREATER THAN 20 CHARACTERS!
+  /// </summary>
   public class DialogueBubble : Sprite2D
   {
-    public const int LINE_FEED = 20; // Determined empirically
+    public const int LINE_FEED_LENGTH = 20; // Determined empirically
     public const int CHAR_FEED_INTERNVAL = 200; // Display a char every 200ms
 
     private static Texture2D _bubbleTextureMono;
@@ -35,36 +40,37 @@ namespace FoodFight
     private Rectangle _sourceRectangle;
     private Vector2 _textStartPosition;
 
+    private Texture2D _bubbleTexture;
+
     private enum XPositionRelativeToCenter { Left, Right }
     private enum YPositionRelativeToCenter { Top, Bottom }
     private XPositionRelativeToCenter _xPosition;
     private YPositionRelativeToCenter _yPosition;
 
-    private string _message;
     private int _totalMessageRow;
     private Vector2 _rowOneStartPosition;
     private Vector2 _rowTwoStartPosition;
     private Cue _nextDialogueCue;
-    
 
-    private int _currentCharPosition;
-    private int _currentRow;
-    private int _currentRowCharPosition;
-    private List<int> scroller; 
+
+    private int _currentRow = 0; // Always start at 0
+    private int _currentRowCharPosition; // Always start at 0
+    private List<string> _scroller; 
     private int _charDisplayTimer;
 
-    private DialogueBubble(Texture2D texture, Vector2 speakerPosition, string message, XPositionRelativeToCenter xPos, YPositionRelativeToCenter yPos) : base(texture, speakerPosition, Vector2.One)
+    private bool _isPlaying;
+    private FoodFightGame _gameLevel;
+
+    private DialogueBubble(FoodFightGame game, Texture2D texture, Vector2 speakerPosition, List<string> scroller, XPositionRelativeToCenter xPos, YPositionRelativeToCenter yPos) : base(texture, speakerPosition, Vector2.One)
     {
       if (_bubbleTextureMono == null)
         _bubbleTextureMono = texture;
-      this._message = message;
+      this._scroller = scroller;
       this._xPosition = xPos;
       this._yPosition = yPos;
-
-      // Start at the message zero so we dont have to check for empty string
-      this._currentCharPosition = message.Length - message.Length; 
-
-      Vector2 actualPositionBasedOnScreenLocation = Vector2.Zero;
+      // Start texture for bubble
+      this._bubbleTexture = (scroller.Count > 1) ? _bubbleTextureHasMore : _bubbleTextureMono;
+      this._gameLevel = game;
 
       if (xPos == XPositionRelativeToCenter.Left)
       {
@@ -115,12 +121,24 @@ namespace FoodFight
         ? YPositionRelativeToCenter.Bottom
         : YPositionRelativeToCenter.Top;
 
-      return new DialogueBubble(_bubbleTextureMono, speakerPosition, msg, xPos, yPos);
+      return new DialogueBubble(level, _bubbleTextureMono, speakerPosition, DialogueBubble.ComputeScroller(msg), xPos, yPos);
     }
 
     public bool IsPlaying()
     {
-      return true;
+      return this._isPlaying;
+    }
+
+    public void Play()
+    {
+      this._isPlaying = true;
+      // this._gameLevel.Pause();
+      this._gameLevel._dialogueIsPlaying = true;
+    }
+
+    public void Pause()
+    {
+      this._isPlaying = false;
     }
 
     public void Update(GameTime gameTime)
@@ -128,14 +146,48 @@ namespace FoodFight
       _charDisplayTimer += gameTime.ElapsedGameTime.Milliseconds;
       if (_charDisplayTimer >= CHAR_FEED_INTERNVAL)
       {
-        
+        if (_currentRow < _scroller.Count && _currentRowCharPosition < _scroller[_currentRow].Length)
+        {
+          this._gameLevel.soundBank.PlayCue("sound-next-char");
+          _currentRowCharPosition++;
+          _charDisplayTimer = 0;
+        }
+        else if (_currentRow < _scroller.Count - 1)
+        {
+          this._gameLevel.soundBank.PlayCue("sound-next-chat");
+          _currentRow++;
+          _currentRowCharPosition = 0;
+        }
+        else
+        {
+          _isPlaying = false; 
+        }
       }
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-      spriteBatch.Draw(_bubbleTextureHasMore, this.position, this._sourceRectangle, Color.White);
-      spriteBatch.DrawString(_mono8, _message, Vector2.Add(this.position, _textStartPosition), Color.White);
+      spriteBatch.Draw(_bubbleTexture, this.position, this._sourceRectangle, Color.White);
+      spriteBatch.DrawString(_mono8, this._scroller[this._currentRow].Substring(0, _currentRowCharPosition), Vector2.Add(this.position, _textStartPosition), Color.White);
+    }
+
+    private static List<string> ComputeScroller(string message)
+    {
+      List<string> localScroller = new List<string>();
+      string[] words = message.Split(' ');
+      for (int wordIndex = 0; wordIndex < words.Length;)
+      {
+        string lineFeed = "";
+        do
+        {
+          lineFeed += " " + words[wordIndex];
+          wordIndex++;
+        } while (lineFeed.Length < LINE_FEED_LENGTH && wordIndex < words.Length);
+
+        localScroller.Add(lineFeed);
+      }
+
+      return localScroller;
     }
   }
 }

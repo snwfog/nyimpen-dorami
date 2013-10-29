@@ -26,12 +26,13 @@ namespace Assignment1
   {
     public bool DebugMode = false;
 
-    private bool _isPaused;
+    private bool _isPaused; // Show dark backdrop and unpausable with P
+    private bool _isFrozen; // Don't show dark backdrop and unpause with P
 
     public int MaxGameTime { get; set; }
 
-    private bool _introIsPlaying = true;
-    private DialogueBubble _intro;
+    public bool _dialogueIsPlaying { get; set; }
+    public List<DialogueBubble> AllDialogues; 
 
     public GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
@@ -100,11 +101,15 @@ namespace Assignment1
       PowerUps = new List<PowerUp>();
       TotalFlyingProjectiles = new List<Projectile>();
       GlacierPits = new List<GlacierPit>();
+      AllDialogues = new List<DialogueBubble>();
 
       if (this.DebugMode)
         MaxGameTime = 5000; // 5 seconds debug mode
       else
         MaxGameTime = 5 * 1000 * 60; // 5 minutes normal play
+
+      // I AM PAUSING GAME AT THE START HERE!!! LOL BAD CODE
+      this.Pause();
     }
 
     protected override void Initialize()
@@ -220,13 +225,20 @@ namespace Assignment1
       mono12 = Content.Load<SpriteFont>("manaspace12");
 
       // Play intro
-      _intro = DialogueBubble.GetNewInstance(this, doraemon.position, "01234567890123456789");
-
+      DialogueBubble doramiNeedsHelp1 = DialogueBubble.GetNewInstance(this, dorami.position, "Help me Doraemon!");
+      AllDialogues.Add(doramiNeedsHelp1);
+      doramiNeedsHelp1.Play();
+      DialogueBubble doraemonIsComing1 = DialogueBubble.GetNewInstance(this, doraemon.position, "Hold on Dorami!");
+      AllDialogues.Add(doraemonIsComing1);
+      doraemonIsComing1.Play();
     }
 
     public void Pause() { _isPaused = true; }
     public void Resume() { _isPaused = false; }
     public bool IsPaused() { return _isPaused; }
+    public void Freeze() { _isFrozen = true; } 
+    public void Unfreeze() { _isFrozen = false; } 
+    public bool IsFrozen() { return this._isFrozen; }
 
     protected override void LoadContent()
     {
@@ -277,8 +289,29 @@ namespace Assignment1
         }
       }
 
+      // Let the dialgoue flow
+      if (this._dialogueIsPlaying)
+      {
+        // Dialogue challenge (will play all dialogue before moving on)
+        this._dialogueIsPlaying = false;
+        foreach (DialogueBubble dialogue in AllDialogues)
+        {
+          if (dialogue.IsPlaying())
+          {
+            dialogue.Update(gameTime);
+            this._dialogueIsPlaying = true;
+            break; // Break, to not update all dialoge at the same time
+          }
+        }
+
+        if (this._dialogueIsPlaying)
+          return;
+        else
+          this.Resume();
+      }
+
       if (this.IsPaused()) return;
-      if (this._introIsPlaying) return;
+
 
       dorami.Update(gameTime, yardBound);
       if (dorami.CheckCollision(doraemon))
@@ -423,18 +456,20 @@ namespace Assignment1
 
       spriteBatch.End();
 
-      if (_introIsPlaying)
+      if (_dialogueIsPlaying)
       {
         this.Pause();
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-        _intro.Draw(spriteBatch);
+        foreach (DialogueBubble dialogue in AllDialogues)
+          if (dialogue.IsPlaying())
+            dialogue.Draw(spriteBatch);
         spriteBatch.End();
       }
       else if (this.IsPaused())
       {
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
         spriteBatch.Draw(TransparentDarkTexture, windowBound, Color.White);
-        spriteBatch.DrawString(mono12, "U(P)AUSE", new Vector2(windowBound.Center.X - 50, windowBound.Center.Y - 32), Color.White);
+        spriteBatch.DrawString(mono12, "U(P)AUSE", new Vector2(windowBound.Center.X - 40, windowBound.Center.Y - 32), Color.White);
         spriteBatch.End();
       }
       base.Draw(gameTime);

@@ -29,7 +29,7 @@ namespace FoodFight
       _doraHeadPosition = new Vector2(windowBound.Right - 32, windowBound.Bottom - 32);
       this._scoreX = (int)_doraHeadPosition.X - SMALL_PADDING - CHAR_WIDTH * 1; // 1 represent 1 digit, which is 0
       this._scoreY = (int)_doraHeadPosition.Y + 3;
-      _scorePosition = new Vector2(_scoreX, _doraHeadPosition.Y);
+      _scorePosition = new Vector2(_scoreX - 3, _doraHeadPosition.Y + 3); // Empirical nudging of 3 pixels
     }
 
     public static ScoreBoard GetNewInstance(IStatefulCharacter link)
