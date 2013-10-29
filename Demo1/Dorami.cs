@@ -23,8 +23,10 @@ namespace FoodFight
     public Dorami(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesY, ref int[] lineSpriteAccToStatus) : base(level, texture, position, 1, nbMaxFramesY, ref lineSpriteAccToStatus, false)
     {
       this.Health = nbMaxFramesY;
-      this.totalHealth = Health;
-      this._updateInterval = 1000 * 1;  
+      // FIXME: Would be better if this was nbMaxFramesY - 1, 
+      // all the index will be changed according to a zero based health system
+      this.totalHealth = Health; 
+      this._updateInterval = level.MaxGameTime / this.totalHealth - 1;
       this.finalPosition = this.position;
       this.savedAnimationInterval = 1000;
       this.IsSaved = false;

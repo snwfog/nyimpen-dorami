@@ -12,7 +12,7 @@ namespace FoodFight
   public class NonPlayableCharacter : AnimatedSprite
   {
 
-    protected int update_interval { get; set; }
+    protected int _updateInterval { get; set; }
     protected int update_timer { get; set; }
     protected float velocity { get; set; }
 
@@ -20,7 +20,7 @@ namespace FoodFight
     public NonPlayableCharacter(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus, bool isMovable) : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.status = Status.IDLE;
-      this.update_interval = 2000; // 2 seconds
+      this._updateInterval = 2000; // 2 seconds
       this.isMovable = isMovable;
       this.velocity = 5.0f;
       this.hitBox = new Rectangle(8, 20, 16, 11);
@@ -32,7 +32,7 @@ namespace FoodFight
       update_timer += gameClock.ElapsedGameTime.Milliseconds;
 
       // Update this NPC's action
-      if (update_timer >= update_interval && this.isMovable)
+      if (update_timer >= _updateInterval && this.isMovable)
       {
         update_timer = 0;
         switch (AnimatedSprite.rand.Next(3))
@@ -63,7 +63,7 @@ namespace FoodFight
       }
       else
       {
-        if (update_timer >= update_interval)
+        if (update_timer >= _updateInterval)
         {
           ++currentFrame;
           currentFrame %= nbMaxFramesX;

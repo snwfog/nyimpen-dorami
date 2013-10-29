@@ -24,9 +24,11 @@ namespace Assignment1
 {
   public class FoodFightGame : Game
   {
-    public bool DebugMode = false;
+    public bool DebugMode = true;
 
     private bool _isPaused;
+
+    public int MaxGameTime { get; set; }
 
     public GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
@@ -95,6 +97,11 @@ namespace Assignment1
       PowerUps = new List<PowerUp>();
       TotalFlyingProjectiles = new List<Projectile>();
       GlacierPits = new List<GlacierPit>();
+
+      if (this.DebugMode)
+        MaxGameTime = 5000; // 5 seconds debug mode
+      else
+        MaxGameTime = 5 * 1000 * 60; // 5 minutes normal play
     }
 
     protected override void Initialize()
