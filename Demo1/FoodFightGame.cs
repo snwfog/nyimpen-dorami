@@ -24,7 +24,7 @@ namespace Assignment1
 {
   public class FoodFightGame : Game
   {
-    public bool DebugMode = true;
+    public bool DebugMode = false;
 
     private bool _isPaused;
 

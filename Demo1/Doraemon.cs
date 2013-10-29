@@ -219,7 +219,9 @@ namespace FoodFight
       {
         Rectangle sourceRect = new Rectangle(knockOutFrame * (int)sizeSprite.X, 0, (int)sizeSprite.X, (int)sizeSprite.Y);
         spriteBatch.Draw(knockOutTexture2D, finalPosition, sourceRect, this.tint, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-        spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
+
+        if (gameLevel.DebugMode)
+          spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
       }
       else
         base.Draw(spriteBatch, cameraPosition);

@@ -184,7 +184,9 @@ namespace FoodFight
         // Get the z-index from height
         //float zIndex = (this.position.Y + this.sizeSprite.Y) / (32 * 9);
         spriteBatch.Draw(texture, finalPosition, sourceRect, this.tint, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-        spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
+
+        if (gameLevel.DebugMode)
+          spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
       }
     }
   }

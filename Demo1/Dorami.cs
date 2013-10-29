@@ -79,11 +79,13 @@ namespace FoodFight
   
     public override void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
     {
+      if (gameLevel.DebugMode)
+        spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
+
       if (IsSaved)
       {
         Rectangle sourceRect = new Rectangle(this.saveFrame * (int)sizeSprite.X, 0, (int)sizeSprite.X, (int)sizeSprite.Y);
         spriteBatch.Draw(savedTexture2D, finalPosition, sourceRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-        spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
         
       }
       else
@@ -91,7 +93,6 @@ namespace FoodFight
         int line = lineSpritesAccToStatus[(Health - 1)];
         Rectangle sourceRect = new Rectangle(0, (int)(line * sizeSprite.Y), (int)sizeSprite.X, (int)sizeSprite.Y);
         spriteBatch.Draw(texture, finalPosition, sourceRect, Color.White);
-        spriteBatch.Draw(new Texture2D(gameLevel.graphics.GraphicsDevice, 1, 1), this.GetHitBoxAsRectangle(), Color.White);
       }
     }
   }
