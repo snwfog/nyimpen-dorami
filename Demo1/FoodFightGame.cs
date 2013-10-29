@@ -86,9 +86,9 @@ namespace Assignment1
       Content.RootDirectory = "Content";
 
       MaxNumberOfAirGuns = 2;
-      MaxNumberOfBadGuysTM = 2;
-      MaxNumberOfPowerUp = 2;
-      MaxNumberOfGlacierPit = 2;
+      MaxNumberOfBadGuysTM = 8;
+      MaxNumberOfPowerUp = 7;
+      MaxNumberOfGlacierPit = 5;
 
       BadGuysTM = new List<SatsuiNoHadoDoraemon>();
       AmmoRack = new List<AirGun>();
@@ -412,7 +412,7 @@ namespace Assignment1
       {
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
         spriteBatch.Draw(TransparentDarkTexture, windowBound, Color.White);
-        spriteBatch.DrawString(mono12, "(P)AUSED", new Vector2(windowBound.Center.X - 32, windowBound.Center.Y - 32), Color.White);
+        spriteBatch.DrawString(mono12, "U(P)AUSE", new Vector2(windowBound.Center.X - 32, windowBound.Center.Y - 32), Color.White);
         spriteBatch.End();
       }
       base.Draw(gameTime);

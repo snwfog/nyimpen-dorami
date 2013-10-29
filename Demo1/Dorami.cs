@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  public class Dorami : NonPlayableCharacter, IStatefulCharacter
+  public class Dorami : NonPlayableCharacter, IStatefulCharacter, KnockableOpponent
   {
     private static Texture2D savedTexture2D;
     private int savedAnimationInterval;
@@ -24,7 +24,7 @@ namespace FoodFight
     {
       this.Health = nbMaxFramesY;
       this.totalHealth = Health;
-      this.update_interval = 1000 * 10;  
+      this._updateInterval = 1000 * 1;  
       this.finalPosition = this.position;
       this.savedAnimationInterval = 1000;
       this.IsSaved = false;
@@ -33,19 +33,23 @@ namespace FoodFight
       this.saveFrameX = 6;
     }
 
-    public int GetNumberOfStates()
+    // KnockableOpponent interface
+    public int KnockOutInterval()
     {
-      return nbMaxFramesY;
+      return 5000;
     }
 
-    public int GetCurrentState()
+    public int KnockOutPenaltyScore()
     {
-      return Health;
+      return gameLevel.doraemon.GetScore();
     }
+
+    public int GetNumberOfStates() { return nbMaxFramesY; }
+    public int GetCurrentState() { return Health; }
 
     public int GetStateUpdateInterval()
     {
-      return this.update_interval;
+      return this._updateInterval;
     }
 
     public override void Update(GameTime gameClock, Rectangle yard)
@@ -61,18 +65,24 @@ namespace FoodFight
             Environment.Exit(0);
         }
       }
-      else if (update_timer >= update_interval)
+      else if (update_timer >= _updateInterval)
       {
-        if (Health > 0)
+        if (Health > 1)
           Health--;
-        else
-          Health = nbMaxFramesY;
 
         update_timer = 0;
 
-        Health = Health == 0 ? totalHealth : Health;
-        //if (Health == 0)
-        //  throw new GamerPrivilegeException();
+        // Uncomment this will loop through Dorami's death
+        if (gameLevel.DebugMode)
+          Health = Health == 1 ? totalHealth : Health; 
+        else if (Health == 1)
+        {
+          gameLevel.doraemon.KnockOutBy(this);
+          // Health stuck at last frame which is Dorami's empty health bar
+          // This method is extremely brittle
+          Health = 1; 
+        }
+
         base.Update(gameClock, yard);
       }
     }

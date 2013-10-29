@@ -38,8 +38,8 @@ namespace FoodFight
 
     public Doraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus): base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
-      this._score = 100;
-      this.velocity = 1.4f;
+      this._score = 20;
+      this.velocity = 0.4f;
 
       this.tint = Color.White;
       MAX_FIRE_INTERVAL = 200;
@@ -64,6 +64,8 @@ namespace FoodFight
 
       this.gun = defaultGun;
     }
+
+    public int GetScore() { return this._score; }
 
     public int GetNumberOfStates()
     {
@@ -130,6 +132,8 @@ namespace FoodFight
       //  Environment.Exit(0);
       //}
     }
+
+    public bool IsDead() { return this._isDead; }
 
     public void LoseScore(int penalty)
     {

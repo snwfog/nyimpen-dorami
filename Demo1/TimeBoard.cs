@@ -43,7 +43,8 @@ namespace FoodFight
 
     public void Update(GameTime gameClock, Rectangle yard)
     {
-      _elapsedGameTime = gameClock.TotalGameTime;
+      if (!_gameLevel.doraemon.IsDead())
+        _elapsedGameTime = gameClock.TotalGameTime;
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition)
