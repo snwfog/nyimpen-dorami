@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  public class SatsuiNoHadoDoraemon : NonPlayableCharacter, Shootable
+  public class SatsuiNoHadoDoraemon : NonPlayableCharacter, Shootable, KnockableOpponent
   {
     private int knockOutFrame;
     private static Texture2D knockOutTexture2D;
@@ -17,6 +17,8 @@ namespace FoodFight
     private bool isKnockOut;
     private int knockOutTimer;
     private int knockOutInterval;
+    private int _penaltyScore;
+    private int _knockOutInterval;
 
     private int MAX_FIRE_INTERVAL_IN_SECOND { get; set; }
     private int MIN_FIRE_INTERVAL_IN_SECOND { get; set; }
@@ -28,6 +30,8 @@ namespace FoodFight
     public SatsuiNoHadoDoraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus, bool isMovable) : base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus, isMovable)
     {
       this.velocity = 0.5f;
+      this._penaltyScore = 5;
+      this._knockOutInterval = 2000;
 
       knockOutFrame = 0;
       knockOutAnimationInterval = 500;
@@ -68,6 +72,16 @@ namespace FoodFight
       gameLevel.TotalFlyingProjectiles.Add(silverBullet);
       // Deprecated
       //silverBullet.Fire();
+    }
+
+    public int KnockOutPenaltyScore()
+    {
+      return this._penaltyScore;
+    }
+
+    public int KnockOutInterval()
+    {
+      return this._knockOutInterval;
     }
 
     public bool IsKnockOut()

@@ -61,6 +61,7 @@
     <Compile Include="Doraemon.cs" />
     <Compile Include="Dorami.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="KnockableOpponent.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="ScoreBoard.cs" />
     <Compile Include="StatefulUIPanel.cs" />

@@ -65,6 +65,8 @@ namespace Assignment1
     public SpriteFont mono8 { get; set; }
     public SpriteFont mono12 { get; set; }
 
+    public int SCORE_PENALTY_MULTIPLIER = 5;
+
     public FoodFightGame()
     {
       graphics = new GraphicsDeviceManager(this);
@@ -322,7 +324,7 @@ namespace Assignment1
           {
             // Check if current bullet is hitting doraemon
             if (bullet.owner is SatsuiNoHadoDoraemon && bullet.CheckCollision(doraemon))
-              doraemon.KnockOut(5000);
+              doraemon.KnockOutBy((KnockableOpponent)bullet); // FIXME: This casting is dangerous
             else if (bullet.owner is Doraemon)
             {
               foreach (SatsuiNoHadoDoraemon badDora in BadGuysTM)
@@ -344,7 +346,9 @@ namespace Assignment1
         foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM)
         {
           if (!badDoraemon.IsKnockOut() && badDoraemon.CheckCollision(doraemon))
-            doraemon.KnockOut(5000);
+          {
+            doraemon.KnockOutBy(badDoraemon);
+          }
           badDoraemon.Update(gameTime, yardBound);
         }
         base.Update(gameTime);
@@ -382,7 +386,7 @@ namespace Assignment1
       {
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
         spriteBatch.Draw(TransparentDarkTexture, windowBound, Color.White);
-        spriteBatch.DrawString(mono12, "PAUSED", new Vector2(windowBound.Center.X - 32, windowBound.Center.Y - 32), Color.White);
+        spriteBatch.DrawString(mono12, "(P)AUSED", new Vector2(windowBound.Center.X - 32, windowBound.Center.Y - 32), Color.White);
         spriteBatch.End();
       }
       base.Draw(gameTime);

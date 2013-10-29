@@ -10,15 +10,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FoodFight
 {
-  public class Projectile : AnimatedSprite
+  public class Projectile : AnimatedSprite, KnockableOpponent
   {
     public AnimatedSprite owner { get; set; }
     protected float velocity;
+
+    private int _knockOutInterval;
+    private int _knockOutPenalty;
 
     public Projectile(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFrameX, int nbMaxFramesY,
       ref int[] lineSpriteAccToStatus, AnimatedSprite owner) : base(level, texture, position, nbMaxFrameX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
       this.velocity = 1.5f;
+
+      this._knockOutPenalty = 2;
+      this._knockOutInterval = 1000;
+
       this.owner = owner;
       this.tint = owner.tint;
       if (this.owner.status == Status.IDLE)
@@ -28,6 +35,11 @@ namespace FoodFight
       this.setHitBoxRectangleAndSize();
       this.isMovable = true;
     }
+
+    public int KnockOutInterval() { return this._knockOutInterval; }
+    public int KnockOutPenaltyScore() { return this._knockOutPenalty; }
+
+
 
     public override Rectangle GetHitBoxAsRectangle()
     {

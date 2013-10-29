@@ -34,9 +34,11 @@ namespace FoodFight
     private int knockOutInterval;
     public AirGun gun { get; set; }
 
+    private bool _isDead;
+
     public Doraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus): base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
-      this._score = 0;
+      this._score = 100;
       this.velocity = 1.4f;
 
       this.tint = Color.White;
@@ -105,15 +107,35 @@ namespace FoodFight
       return isKnockOut;
     }
 
-    public void KnockOut(int duration)
+    public void KnockOutBy(KnockableOpponent opponent)
     {
       if (isKnockOut)
         return;
 
+      // gameLevel.mainLoop.Pause();
+      // gameLevel.soundBank.PlayCue("sound-died");
+      this.LoseScore(gameLevel.SCORE_PENALTY_MULTIPLIER * opponent.KnockOutPenaltyScore());
+      gameLevel.soundBank.PlayCue("sound-bump");
+      isKnockOut = true;
+      knockOutInterval = opponent.KnockOutInterval();
+    }
+
+    public void Died()
+    {
+      this._isDead = true;
       gameLevel.mainLoop.Pause();
       gameLevel.soundBank.PlayCue("sound-died");
-      isKnockOut = true;
-      knockOutInterval = duration;
+      //if (knockOutFrame == nbMaxFramesX - 1)
+      //{
+      //  Environment.Exit(0);
+      //}
+    }
+
+    public void LoseScore(int penalty)
+    {
+      this._score = (this._score - penalty) < 0 ? 0 : this._score - penalty;
+      if (this._score <= 0)
+        this.Died();
     }
 
     private bool HasGun()
@@ -149,7 +171,20 @@ namespace FoodFight
 
       timer += gameClock.ElapsedGameTime.Milliseconds;
       knockOutTimer += gameClock.ElapsedGameTime.Milliseconds;
-      if (IsKnockOut())
+      if (this._isDead)
+      {
+        if (timer >= knockOutAnimationInterval)
+        {
+          timer = 0;
+          ++knockOutFrame;
+          if (knockOutFrame >= nbMaxFramesX)
+          {
+            Environment.Exit(0);
+          }
+        }
+        
+      }
+      else if (IsKnockOut())
       {
         //if (knockOutTimer >= knockOutInterval)
         //{
@@ -160,9 +195,18 @@ namespace FoodFight
         {
           timer = 0;
           ++knockOutFrame;
-          // knockOutFrame %= nbMaxFramesX;
           if (knockOutFrame >= nbMaxFramesX)
-            Environment.Exit(0);
+          {
+            if (_isDead)
+            {
+              
+            }
+            else
+            {
+              this.isKnockOut = false;
+              knockOutFrame %= nbMaxFramesX;
+            }
+          }
         }
       }
       else      
