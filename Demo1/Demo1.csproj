@@ -72,6 +72,7 @@
     <Compile Include="Shootable.cs" />
     <Compile Include="Sprite2D.cs" />
     <Compile Include="IStatefulCharacter.cs" />
+    <Compile Include="TimeBoard.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -91,6 +92,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\canon-on-the-ground.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\clock.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\doraemon-walk-shadow.png">

@@ -39,10 +39,11 @@ namespace Assignment1
 
     public List<Projectile> TotalFlyingProjectiles { get; set; } 
     public Doraemon doraemon { get; set; }
-    private ScoreBoard scoreBoad;
+    private ScoreBoard scoreBoard;
+    private TimeBoard timeBoard;
 
     private Dorami dorami;
-    private StatefulUIPanel doramiUIPanel; 
+    public StatefulUIPanel DoramiHealthPanel { get; set; }
     private Sprite2D yard;
     public Rectangle yardBound { get; set; }
     public Rectangle windowBound { get; set; }
@@ -117,7 +118,8 @@ namespace Assignment1
       doraemonLineSprite[(int)AnimatedSprite.Status.W] = 6;
       doraemonLineSprite[(int)AnimatedSprite.Status.NW] = 7;
       doraemon = new Doraemon(this, doraemonTexture, doraemonInitialPosition, 6, 8, ref doraemonLineSprite);
-      scoreBoad = ScoreBoard.GetNewInstance(doraemon);
+      scoreBoard = ScoreBoard.GetNewInstance(doraemon);
+      timeBoard = TimeBoard.GetNewInstance(this);
 
 
       // Create Dorami character
@@ -136,7 +138,7 @@ namespace Assignment1
       int doramiUIPanelPositionX = windowBound.Left;
       int doramiUIPanelPositionY = windowBound.Bottom - GRID_SIZE;
       Vector2 doramiUIPanelPosition = new Vector2(doramiUIPanelPositionX, doramiUIPanelPositionY);
-      doramiUIPanel = new StatefulUIPanel(this, doramiUIPanelTexture, doramiUIPanelPosition, 6, ref doramiLineSprite, dorami);
+      DoramiHealthPanel = new StatefulUIPanel(this, doramiUIPanelTexture, doramiUIPanelPosition, 6, ref doramiLineSprite, dorami);
 
 
       // Create SatsuiNoHadoDoraemon
@@ -288,7 +290,8 @@ namespace Assignment1
         }
 
         doraemon.Update(gameTime, yardBound);
-        scoreBoad.Update(gameTime, yardBound);
+        scoreBoard.Update(gameTime, yardBound);
+        timeBoard.Update(gameTime, yardBound);
 
         for (int p = 0; p < PowerUps.Count; p++)
         {
@@ -361,9 +364,10 @@ namespace Assignment1
       yard.Draw(spriteBatch);
       // mySprite1.Draw(spriteBatch);
       dorami.Draw(spriteBatch, Vector2.Zero);
-      doramiUIPanel.Draw(spriteBatch, Vector2.Zero);
+      DoramiHealthPanel.Draw(spriteBatch, Vector2.Zero);
       doraemon.Draw(spriteBatch, Vector2.Zero);
-      scoreBoad.Draw(spriteBatch, Vector2.Zero);
+      scoreBoard.Draw(spriteBatch, Vector2.Zero);
+      timeBoard.Draw(spriteBatch, Vector2.Zero);
       foreach (Projectile bullet in TotalFlyingProjectiles) bullet.Draw(spriteBatch, Vector2.Zero);
       foreach (AirGun gun in AmmoRack) gun.Draw(spriteBatch, Vector2.Zero);
       foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM) badDoraemon.Draw(spriteBatch, Vector2.Zero);
