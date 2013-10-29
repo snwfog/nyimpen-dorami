@@ -70,7 +70,10 @@ namespace FoodFight
       else if (update_timer >= _updateInterval)
       {
         if (Health > 1)
+        {
           Health--;
+          gameLevel.soundBank.PlayCue("sound-hurt");
+        }
 
         update_timer = 0;
 
