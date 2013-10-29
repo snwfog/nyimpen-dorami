@@ -60,6 +60,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Doraemon.cs" />
     <Compile Include="Dorami.cs" />
+    <Compile Include="GlacierPit.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KnockableOpponent.cs" />
     <Compile Include="PowerUp.cs" />
@@ -112,6 +113,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\dorami.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\glacier-pit.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\hado-doraemon-walk.png">

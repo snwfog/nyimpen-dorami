@@ -13,6 +13,7 @@ using System.Linq;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
+using OpenTK.Graphics.ES10;
 using OpenTK.Input;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using GamePad = Microsoft.Xna.Framework.Input.GamePad;
@@ -23,6 +24,8 @@ namespace Assignment1
 {
   public class FoodFightGame : Game
   {
+    public bool DebugMode = true;
+
     private bool _isPaused;
 
     public GraphicsDeviceManager graphics;
@@ -36,6 +39,9 @@ namespace Assignment1
 
     public int MaxNumberOfPowerUp { get; set; }
     public List<PowerUp> PowerUps { get; set; }
+
+    public int MaxNumberOfGlacierPit { get; set; }
+    public List<GlacierPit> GlacierPits { get; set; } 
 
     public List<Projectile> TotalFlyingProjectiles { get; set; } 
     public Doraemon doraemon { get; set; }
@@ -82,11 +88,13 @@ namespace Assignment1
       MaxNumberOfAirGuns = 2;
       MaxNumberOfBadGuysTM = 2;
       MaxNumberOfPowerUp = 2;
+      MaxNumberOfGlacierPit = 2;
 
       BadGuysTM = new List<SatsuiNoHadoDoraemon>();
       AmmoRack = new List<AirGun>();
       PowerUps = new List<PowerUp>();
       TotalFlyingProjectiles = new List<Projectile>();
+      GlacierPits = new List<GlacierPit>();
     }
 
     protected override void Initialize()
@@ -183,6 +191,10 @@ namespace Assignment1
       // Create Power Ups for pickup on the floor
       for (int i = 0; i < MaxNumberOfPowerUp; i++)
         PowerUps.Add(PowerUp.GetNewInstance());
+
+      // Create Glacier pits
+      for (int i = 0; i < MaxNumberOfGlacierPit; i++)
+        GlacierPits.Add(GlacierPit.GetNewInstance(this));
 
       // Load misc data
       _isPaused = true;
@@ -351,6 +363,19 @@ namespace Assignment1
           }
           badDoraemon.Update(gameTime, yardBound);
         }
+
+        for (int i = 0; i < GlacierPits.Count; i++)
+        {
+          GlacierPit pit = GlacierPits[i];
+          if (!doraemon.IsKnockOut() && pit.CheckCollision(doraemon))
+          {
+            doraemon.KnockOutBy(pit);
+            GlacierPits[i] = GlacierPit.GetNewInstance(this);
+            continue;
+          }
+        }
+
+
         base.Update(gameTime);
       }
     }
@@ -379,6 +404,7 @@ namespace Assignment1
       foreach (AirGun gun in AmmoRack) gun.Draw(spriteBatch, Vector2.Zero);
       foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM) badDoraemon.Draw(spriteBatch, Vector2.Zero);
       foreach (PowerUp powerUp in PowerUps) powerUp.Draw(spriteBatch, Vector2.Zero);
+      foreach (GlacierPit pit in GlacierPits) pit.Draw(spriteBatch);
 
       spriteBatch.End();
 
