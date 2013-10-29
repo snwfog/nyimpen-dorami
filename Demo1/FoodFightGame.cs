@@ -8,32 +8,39 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using System.Linq;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
+using OpenTK.Input;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using GamePad = Microsoft.Xna.Framework.Input.GamePad;
+
 #endregion
 
 namespace Assignment1
 {
   public class FoodFightGame : Game
   {
+    private bool _isPaused;
+
     public GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
 
-    private int maxNumberOfBadGuysTM = 10;
+    public int MaxNumberOfBadGuysTM { get; set; }
     public List<SatsuiNoHadoDoraemon> BadGuysTM { get; set; }// TM for Trademark lol
 
-    private int maxNumberOfAirGuns = 2;
+    public int MaxNumberOfAirGuns { get; set; }
     public List<AirGun> AmmoRack { get; set; }
 
-    private int maxNumberOfPowerUp = 7;
+    public int MaxNumberOfPowerUp { get; set; }
     public List<PowerUp> PowerUps { get; set; }
 
     public List<Projectile> TotalFlyingProjectiles { get; set; } 
     public Doraemon doraemon { get; set; }
+    private ScoreBoard scoreBoad;
+
     private Dorami dorami;
     private StatefulUIPanel doramiUIPanel; 
     private Sprite2D yard;
@@ -41,11 +48,20 @@ namespace Assignment1
     public Rectangle windowBound { get; set; }
 
     public const int GRID_SIZE = 32; // Which is also the standard size of all sprites...
+    public const int REACTION_THRESHOLD = 300;
+    private int reactionTimer;
 
     public AudioEngine engine { get; set; }
     public SoundBank soundBank { get; set; }
     public WaveBank waveBank { get; set; }
     public Cue mainLoop { get; set; }
+    public Cue victoryCue { get; set; }
+
+    public Texture2D DebugTexture { get; set; }
+    public Texture2D TransparentDarkTexture { get; set; }
+
+    public SpriteFont mono8 { get; set; }
+    public SpriteFont mono12 { get; set; }
 
     public FoodFightGame()
     {
@@ -58,6 +74,10 @@ namespace Assignment1
       yardBound = new Rectangle(GRID_SIZE, GRID_SIZE, graphics.PreferredBackBufferWidth - 2 * GRID_SIZE, graphics.PreferredBackBufferHeight - 3 * GRID_SIZE);
 
       Content.RootDirectory = "Content";
+
+      MaxNumberOfAirGuns = 2;
+      MaxNumberOfBadGuysTM = 2;
+      MaxNumberOfPowerUp = 90;
 
       BadGuysTM = new List<SatsuiNoHadoDoraemon>();
       AmmoRack = new List<AirGun>();
@@ -97,6 +117,7 @@ namespace Assignment1
       doraemonLineSprite[(int)AnimatedSprite.Status.W] = 6;
       doraemonLineSprite[(int)AnimatedSprite.Status.NW] = 7;
       doraemon = new Doraemon(this, doraemonTexture, doraemonInitialPosition, 6, 8, ref doraemonLineSprite);
+      scoreBoad = ScoreBoard.GetNewInstance(doraemon);
 
 
       // Create Dorami character
@@ -135,7 +156,7 @@ namespace Assignment1
       hadoDoraemonLineSprite[(int)AnimatedSprite.Status.W] = 6;
       hadoDoraemonLineSprite[(int)AnimatedSprite.Status.NW] = 7;
       // Create Satsui No Hado Doraemon
-      for (int i = 1; i <= maxNumberOfBadGuysTM; i++)
+      for (int i = 1; i <= MaxNumberOfBadGuysTM; i++)
       {
         int x = AnimatedSprite.rand.Next(mobSpawnBound.Left, mobSpawnBound.Right);
         int y = AnimatedSprite.rand.Next(mobSpawnBound.Top, mobSpawnBound.Bottom);
@@ -150,13 +171,30 @@ namespace Assignment1
 
 
       // Create Air gun for pickup on the floor
-      for (int i = 0; i < maxNumberOfAirGuns; i++)
+      for (int i = 0; i < MaxNumberOfAirGuns; i++)
         AmmoRack.Add(AirGun.GetNewInstance());
 
       // Create Power Ups for pickup on the floor
-      for (int i = 0; i < maxNumberOfPowerUp; i++)
+      for (int i = 0; i < MaxNumberOfPowerUp; i++)
         PowerUps.Add(PowerUp.GetNewInstance());
+
+      // Load misc data
+      _isPaused = true;
+
+      // More plain texture
+      DebugTexture = new Texture2D(GraphicsDevice, 1, 1);
+      DebugTexture.SetData(new Color[] {new Color(225, 0, 255, 90)});
+      TransparentDarkTexture = new Texture2D(GraphicsDevice, 1, 1);
+      TransparentDarkTexture.SetData(new Color[] {new Color(0, 0, 0, 200)});
+
+      // Font
+      mono8 = Content.Load<SpriteFont>("manaspace0");
+      mono12 = Content.Load<SpriteFont>("manaspace12");
     }
+
+    public void Pause() { _isPaused = true; }
+    public void Resume() { _isPaused = false; }
+    public bool IsPaused() { return _isPaused; }
 
     protected override void LoadContent()
     {
@@ -185,9 +223,36 @@ namespace Assignment1
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
         this.Exit();
 
+
+      // Allow the player to pause the game, with a reaction timer 
+      // so player cannot press it multiple time in a row
+      reactionTimer += gameTime.ElapsedGameTime.Milliseconds;
+      if (this.IsPaused() && reactionTimer >= REACTION_THRESHOLD)
+      {
+        // Listen for unpause key
+        if (Keyboard.GetState().IsKeyDown(Key.P))
+        {
+          this.Resume();
+          reactionTimer = 0;
+        }
+      }
+      else if (!this.IsPaused() && reactionTimer >= REACTION_THRESHOLD)
+      {
+        if (Keyboard.GetState().IsKeyDown(Key.P))
+        {
+          this.Pause();
+          reactionTimer = 0;
+        }
+      }
+
+      if (this.IsPaused()) return;
+
       dorami.Update(gameTime, yardBound);
       if (dorami.CheckCollision(doraemon))
       {
+        if (dorami.IsSaved)
+          return;
+
         dorami.IsSaved = true;
         mainLoop.Pause();
         Cue victory = soundBank.GetCue("sound-musicbox");
@@ -223,6 +288,7 @@ namespace Assignment1
         }
 
         doraemon.Update(gameTime, yardBound);
+        scoreBoad.Update(gameTime, yardBound);
 
         for (int p = 0; p < PowerUps.Count; p++)
         {
@@ -287,6 +353,7 @@ namespace Assignment1
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Draw(GameTime gameTime)
     {
+
       graphics.GraphicsDevice.Clear(Color.Black);
 
       // Draw the sprite using Alpha Blend, which uses transparency information if avaliable
@@ -296,12 +363,21 @@ namespace Assignment1
       dorami.Draw(spriteBatch, Vector2.Zero);
       doramiUIPanel.Draw(spriteBatch, Vector2.Zero);
       doraemon.Draw(spriteBatch, Vector2.Zero);
+      scoreBoad.Draw(spriteBatch, Vector2.Zero);
       foreach (Projectile bullet in TotalFlyingProjectiles) bullet.Draw(spriteBatch, Vector2.Zero);
       foreach (AirGun gun in AmmoRack) gun.Draw(spriteBatch, Vector2.Zero);
       foreach (SatsuiNoHadoDoraemon badDoraemon in BadGuysTM) badDoraemon.Draw(spriteBatch, Vector2.Zero);
       foreach (PowerUp powerUp in PowerUps) powerUp.Draw(spriteBatch, Vector2.Zero);
 
       spriteBatch.End();
+
+      if (this.IsPaused())
+      {
+        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        spriteBatch.Draw(TransparentDarkTexture, windowBound, Color.White);
+        spriteBatch.DrawString(mono12, "PAUSED", new Vector2(windowBound.Center.X - 32, windowBound.Center.Y - 32), Color.White);
+        spriteBatch.End();
+      }
       base.Draw(gameTime);
     }
   }

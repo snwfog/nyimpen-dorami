@@ -61,6 +61,7 @@
     <Compile Include="Dorami.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="PowerUp.cs" />
+    <Compile Include="ScoreBoard.cs" />
     <Compile Include="StatefulUIPanel.cs" />
     <Compile Include="FoodFightGame.cs" />
     <Compile Include="NonPlayableCharacter.cs" />
@@ -116,6 +117,9 @@
     <Content Include="Content\knockout.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\pause-texture.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\power-up-grape-fruit.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -164,6 +168,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Content\doraemon.xgs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\manaspace0.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\manaspace12.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\sound-bank.xsb">

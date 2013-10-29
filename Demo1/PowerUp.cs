@@ -11,6 +11,7 @@ namespace FoodFight
 {
   public class PowerUp : AnimatedSprite
   {
+    public static int HIGHEST_POWER_UP_SCORE = 5;
     private static Texture2D powerUpGrapeFruitTexture;
     private static Texture2D powerUpLettuceTexture;
     private static Texture2D powerUpPepperTexture;
@@ -24,6 +25,8 @@ namespace FoodFight
     public PowerUpType powerUpType { get; set; }
     public int point { get; set; }
 
+    public int PickUpPlayCount { get; set; }
+
     public PowerUp(FoodFightGame level, Texture2D texture, Vector2 position, PowerUpType powerUpType, int point, ref int[] lineSpriteAccToStatus) : base(level, texture, position, 4, 1, ref lineSpriteAccToStatus)
     {
       this.status = Status.IDLE;
@@ -35,6 +38,7 @@ namespace FoodFight
       this.hitBox = new Rectangle(6, 8, 20, 19);
       this.powerUpType = powerUpType;
       this.point = point;
+      this.PickUpPlayCount = 1;
     }
 
     public static PowerUp GetNewInstance()

@@ -20,6 +20,7 @@ namespace FoodFight
     private const int MAX_TTL = 40 * 1000;
     private int timeToLive = rand.Next(MIN_TTL, MAX_TTL);
 
+    public int PickUpPlayCount { get; set; }
     public AirGun(FoodFightGame level, Texture2D texture, Vector2 position, ref int[] lineSpriteAccToStatus)
       : base(level, texture, position, 1, 1, ref lineSpriteAccToStatus)
     {
@@ -28,6 +29,7 @@ namespace FoodFight
       this.idleStatus = Status.N;
       this.finalPosition = this.position;
       this.IsConsumed = false;
+      this.PickUpPlayCount = 1;
     }
 
     public bool HasAmmo()

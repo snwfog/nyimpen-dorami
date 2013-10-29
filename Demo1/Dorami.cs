@@ -24,9 +24,9 @@ namespace FoodFight
     {
       this.Health = nbMaxFramesY;
       this.totalHealth = Health;
-      this.update_interval = 1000 * 10; // 2 seconds
+      this.update_interval = 1000 * 10;  
       this.finalPosition = this.position;
-      this.savedAnimationInterval = 500;
+      this.savedAnimationInterval = 1000;
       this.IsSaved = false;
       this.saveFrame = 0;
       savedTexture2D = level.Content.Load<Texture2D>("saved");

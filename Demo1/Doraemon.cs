@@ -13,9 +13,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FoodFight
 {
-  public class Doraemon : Character, Shootable
+  public class Doraemon : Character, Shootable, IStatefulCharacter
   {
-    private int score;
+    private int _score;
 
     public static Texture2D ammoTexture;
     public List<Projectile> ammoRack { get; set; } 
@@ -36,7 +36,7 @@ namespace FoodFight
 
     public Doraemon(FoodFightGame level, Texture2D texture, Vector2 position, int nbMaxFramesX, int nbMaxFramesY, ref int[] lineSpriteAccToStatus): base(level, texture, position, nbMaxFramesX, nbMaxFramesY, ref lineSpriteAccToStatus)
     {
-      this.score = 0;
+      this._score = 0;
       this.velocity = 1.4f;
 
       this.tint = Color.White;
@@ -45,7 +45,7 @@ namespace FoodFight
       fireInterval = MAX_FIRE_INTERVAL;
 
       knockOutFrame = 0;
-      knockOutAnimationInterval = 500; // This is longer than the regular sprite update
+      knockOutAnimationInterval = 1000; // This is longer than the regular sprite update
       isKnockOut = false;
       if (knockOutTexture2D == null)
         knockOutTexture2D = level.Content.Load<Texture2D>("knockout");
@@ -63,8 +63,26 @@ namespace FoodFight
       this.gun = defaultGun;
     }
 
+    public int GetNumberOfStates()
+    {
+      return 0; // 0 == unlimited amount of state but its not really used here
+    }
+
+    public int GetStateUpdateInterval()
+    {
+      return 0; // 0 == no delay
+    }
+
+    public int GetCurrentState()
+    {
+      return _score;
+    }
+
     public void PickUpGun(AirGun gun)
     {
+      if (gun.IsConsumed)
+        return;
+
       this.gun = gun;
       gun.IsConsumed = true; // This code is brittle, should use observer pattern
       // Play pickup cue
@@ -73,7 +91,10 @@ namespace FoodFight
 
     public void PickUpPowerUp(PowerUp up)
     {
-      this.score += up.point;
+      if (up.IsConsumed)
+        return;
+
+      this._score += up.point;
       up.IsConsumed = true;
       // Play pickup cue
       gameLevel.soundBank.PlayCue("sound-pickup");
