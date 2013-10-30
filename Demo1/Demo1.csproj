@@ -95,6 +95,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\banner.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\canon-on-the-ground.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -71,13 +71,14 @@ namespace Assignment1
     public Cue mainLoop { get; set; }
     public Cue victoryCue { get; set; }
 
+    public Texture2D BannerTexture { get; set; }
     public Texture2D DebugTexture { get; set; }
     public Texture2D TransparentDarkTexture { get; set; }
 
     public SpriteFont mono8 { get; set; }
     public SpriteFont mono12 { get; set; }
 
-    public int SCORE_PENALTY_MULTIPLIER = 5;
+    public int SCORE_PENALTY_MULTIPLIER = 10;
 
     public FoodFightGame()
     {
@@ -92,7 +93,7 @@ namespace Assignment1
       Content.RootDirectory = "Content";
 
       MaxNumberOfAirGuns = 2;
-      MaxNumberOfBadGuysTM = 8;
+      MaxNumberOfBadGuysTM = 20;
       MaxNumberOfPowerUp = 7;
       MaxNumberOfGlacierPit = 5;
 
@@ -215,6 +216,7 @@ namespace Assignment1
       _isPaused = true;
 
       // More plain texture
+      BannerTexture = Content.Load<Texture2D>("banner");
       DebugTexture = new Texture2D(GraphicsDevice, 1, 1);
       DebugTexture.SetData(new Color[] {new Color(225, 0, 255, 90)});
       TransparentDarkTexture = new Texture2D(GraphicsDevice, 1, 1);
@@ -469,7 +471,8 @@ namespace Assignment1
       {
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
         spriteBatch.Draw(TransparentDarkTexture, windowBound, Color.White);
-        spriteBatch.DrawString(mono12, "U(P)AUSE", new Vector2(windowBound.Center.X - 40, windowBound.Center.Y - 32), Color.White);
+        spriteBatch.Draw(BannerTexture, new Vector2(windowBound.Center.X - 110, windowBound.Center.Y - 75), Color.White);
+        spriteBatch.DrawString(mono12, "U(P)AUSE", new Vector2(windowBound.Center.X - 40, windowBound.Center.Y + 32), Color.White);
         spriteBatch.End();
       }
       base.Draw(gameTime);
