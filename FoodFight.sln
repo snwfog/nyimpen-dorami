@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo1", "Demo1\Demo1.csproj", "{214BDED5-A632-4B3B-BCFB-4829AAE21257}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodFight", "Demo1\FoodFight.csproj", "{214BDED5-A632-4B3B-BCFB-4829AAE21257}"
 EndProject
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "oalinst", "..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\oalinst.exe", "{B894782C-5489-488A-B77C-A11F98482421}"
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "oalinst", "..\Program Files (x86)\MonoGame\v3.0\oalinst.exe", "{B894782C-5489-488A-B77C-A11F98482421}"
 	ProjectSection(DebuggerProjectSystem) = preProject
 		PortSupplier = 00000000-0000-0000-0000-000000000000
 		Executable = C:\Program Files (x86)\MonoGame\v3.0\oalinst.exe

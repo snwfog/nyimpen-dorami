@@ -78,7 +78,7 @@ namespace Assignment1
     public SpriteFont mono8 { get; set; }
     public SpriteFont mono12 { get; set; }
 
-    public int SCORE_PENALTY_MULTIPLIER = 10;
+    public int SCORE_PENALTY_MULTIPLIER = 1;
 
     public FoodFightGame()
     {
@@ -92,8 +92,8 @@ namespace Assignment1
 
       Content.RootDirectory = "Content";
 
-      MaxNumberOfAirGuns = 2;
-      MaxNumberOfBadGuysTM = 20;
+      MaxNumberOfAirGuns = 8;
+      MaxNumberOfBadGuysTM = 4;
       MaxNumberOfPowerUp = 7;
       MaxNumberOfGlacierPit = 5;
 
