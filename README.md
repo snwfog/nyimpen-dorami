@@ -1,6 +1,16 @@
 Chao Yang
 5682061
 
+# Screenshot
+![img](ss/ss1.png)
+![img](ss/ss2.png)
+![img](ss/ss3.png)
+![img](ss/ss4.png)
+![img](ss/ss5.png)
+![img](ss/ss7.png)
+![img](ss/ss8.png)
+![img](ss/ss9.png)
+
 Note: The project is too large, you can find it on Github at:
 https://github.com/snwfog/nyimpen-dorami
 
