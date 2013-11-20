@@ -1,7 +1,7 @@
-Chao Yang
-5682061
+# Nyimpen Dorami (Saving Dorami)
+##### Google translate
 
-# Screenshot
+## Screenshot
 ![img](ss/ss1.png)
 ![img](ss/ss2.png)
 ![img](ss/ss3.png)
